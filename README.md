@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# Decentralized Insurance UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repo contains the basic UI components used for the decentralized insurance project
+
+
 
 ## Available Scripts
 
