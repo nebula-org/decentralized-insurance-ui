@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
     "@craco/craco": "^7.1.0",
+    "@irys/sdk": "0.0.4",
     "@lit-protocol/lit-node-client": "6.2.2",
     "@reduxjs/toolkit": "^2.2.6",
     "@testing-library/jest-dom": "^5.17.0",
