@@ -77,7 +77,7 @@ const AppLayout = () => {
         textAlign: 'center',
         color: '#fff',
         height: 64,
-        backgroundColor: token.colorBgBase,
+        background: 'linear-gradient(180deg, #000000 50%, #222129 100%)',
         borderBottom: '1px solid #2D2C32'
     };
 

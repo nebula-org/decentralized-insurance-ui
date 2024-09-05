@@ -4,7 +4,6 @@ import { z } from "zod";
 
 import "./WalletConnect.css";
 import { ethers } from 'ethers';
-import { connected, disconnected, store } from '../../redux/slices/walletSlice';
 import { useNavigate } from 'react-router-dom';
 import NBButton from '../NBButton/NBButton';
 
@@ -26,21 +25,9 @@ const WalletConnect = () => {
 
     }, [])
 
-    useEffect(() => {
-        store.subscribe(() => {
-            const data = store.getState()
-            if (data && data.value && data.value.type == "wallet/connected" && data.value.payload) {
-                if (data.value.payload.address !== address) {
-                    setAddress(data.value.payload.address)
-                }
+  
 
-            }
-        })
-    }, [])
 
-    useEffect(() => {
-        store.dispatch(connected({ address }))
-    }, [address])
 
     const getBalance = async () => {
 
@@ -86,13 +73,12 @@ const WalletConnect = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const res = await provider.send("eth_requestAccounts", []);
 
-        if (res && res.length) {
-            setAddress(res[0])
-            localStorage.setItem('address', res[0])
-        }
-        // const signer = provider.getSigner()
-        // setProvider(provider)
-        // setSigner(signer)
+        const signer = provider.getSigner()
+        const walletAddress =  await signer.getAddress()
+        
+        setAddress(walletAddress)
+        localStorage.setItem('address', walletAddress)
+       
 
 
 

@@ -10,13 +10,14 @@ import InsuranceProduct from '../../components/InsuranceProduct/InsuranceProduct
 import Nominee from '../../components/Nominee/Nominee';
 import { Summary } from '../../components/Summary/Summary';
 import Payment from '../../components/Payment/Payment';
-import { store } from '../../redux/slices/walletSlice';
+
 import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
 // Set up your contract address and ABI
 import ERC20_ABI from "../../ethereum/abi/USDC.json"
 import PRODUCT_ABI from "../../ethereum/abi/Product.json"
 import NBButton from '../../components/NBButton/NBButton';
+import { encryptData } from '../../encryption/encrypt';
 
 
 // Example USDC token address on Arbitrum or Sepolia
@@ -82,17 +83,7 @@ const BasicDetails = () => {
 
   }, [])
 
-  useEffect(() => {
-    store.subscribe(() => {
-      const data = store.getState()
-      console.log("add")
-      if (data && data.value && data.value.type == "wallet/connected" && data.value.payload) {
-        const { address } = data.value.payload
-        console.log("address")
-        setAddress(address)
-      }
-    })
-  }, [])
+
 
   const initProvider = async () => {
     const tempProvider = new ethers.providers.Web3Provider(window.ethereum)
@@ -229,8 +220,20 @@ const BasicDetails = () => {
 
   const handleTransfer = async () => {
     if (buyingPolicy) return
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    await provider.send('eth_requestAccounts', [])
+    const signer = await provider.getSigner();
+    if (!provider || !signer) return;
+
     if (test) {
-      navigate("/success")
+      try {
+        const dataToEncrypt = JSON.stringify(details)
+        const [ciphertext, dataToEncryptHash] = await encryptData(signer, walletAddress, dataToEncrypt, 'My PI data')
+        console.log("Cipher and hash: ", ciphertext, " : hash:  " , dataToEncryptHash)
+      } catch(err) {
+        console.log("Error in encrypting pi data: ", err)
+      }
+      // navigate("/success")
       return
     }
 
@@ -444,7 +447,7 @@ const BasicDetails = () => {
               disabled={buyingPolicy}
               loading={buyingPolicy}
             >
-              Pay
+              Buy Policy
             </NBButton>}
             {/* {activeTab == 5 && approved && <Button
               onClick={handleTransfer}

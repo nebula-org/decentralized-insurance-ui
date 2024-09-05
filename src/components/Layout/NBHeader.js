@@ -2,7 +2,7 @@ import { CopyOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
-import { store, connected } from '../../redux/slices/walletSlice';
+
 
 import { router } from './Layout';
 import "./NBHeader.css";
@@ -23,20 +23,6 @@ const NBHeader = () => {
 
     }, [])
 
-    useEffect(() => {
-        store.subscribe(() => {
-            const data = store.getState()
-            if (data && data.value && data.value.type == "wallet/connected" && data.value.payload) {
-                if (data.value.payload.address !== address) {
-                    setAddress(data.value.payload.address)
-                }
-            }
-        })
-    }, [])
-
-    useEffect(() => {
-        store.dispatch(connected({ address }))
-    }, [address])
 
     const handleLogoClick = () => {
         router.navigate("/")
@@ -79,14 +65,11 @@ const NBHeader = () => {
 
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const res = await provider.send("eth_requestAccounts", []);
-
-        if (res && res.length) {
-            setAddress(res[0])
-            localStorage.setItem('address', res[0])
-        }
-        // const signer = provider.getSigner()
-        // setProvider(provider)
-        // setSigner(signer)
+        const signer = provider.getSigner()
+        const walletAddress =  await signer.getAddress()
+        
+        setAddress(walletAddress)
+        localStorage.setItem('address', walletAddress)
 
 
 
