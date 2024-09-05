@@ -1,23 +1,22 @@
-import React, { useState, createContext, useEffect, act } from 'react'
+import React, { createContext, useEffect, useState } from 'react';
 
-import NebulaTabs from '../../components/Tabs/Tabs'
+import NebulaTabs from '../../components/Tabs/Tabs';
 
-import "./BasicDetails.css";
 import BasicInfo from '../../components/BasicInfo/BasicInfo';
+import "./BasicDetails.css";
 
-import { Button } from 'antd'
 import InsuranceProduct from '../../components/InsuranceProduct/InsuranceProduct';
 import Nominee from '../../components/Nominee/Nominee';
-import { Summary } from '../../components/Summary/Summary';
 import Payment from '../../components/Payment/Payment';
+import { Summary } from '../../components/Summary/Summary';
 
 import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
 // Set up your contract address and ABI
-import ERC20_ABI from "../../ethereum/abi/USDC.json"
-import PRODUCT_ABI from "../../ethereum/abi/Product.json"
 import NBButton from '../../components/NBButton/NBButton';
 import { encryptData } from '../../encryption/encrypt';
+import PRODUCT_ABI from "../../ethereum/abi/Product.json";
+import ERC20_ABI from "../../ethereum/abi/USDC.json";
 
 
 // Example USDC token address on Arbitrum or Sepolia
@@ -230,6 +229,15 @@ const BasicDetails = () => {
         const dataToEncrypt = JSON.stringify(details)
         const [ciphertext, dataToEncryptHash] = await encryptData(signer, walletAddress, dataToEncrypt, 'My PI data')
         console.log("Cipher and hash: ", ciphertext, " : hash:  " , dataToEncryptHash)
+
+        if (ciphertext && details.nominee) {
+          // TODO: call api
+          // API to store data on irys
+          // store data on mongodb  { address: owneraddress, resource: receipt.id, nominee: nomineeAddress }
+
+          // call api to fetch all docs in collection, fetch from irys, return resp
+          // client can decrypt only the ones he is allowed to
+        }
       } catch(err) {
         console.log("Error in encrypting pi data: ", err)
       }

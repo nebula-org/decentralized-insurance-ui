@@ -1,11 +1,7 @@
 
 import { WebIrys } from "@irys/sdk";
 
-export const getWebIrys = async () => {
-	// Ethers5 provider
-	await window.ethereum.enable();
-	const provider = new providers.Web3Provider(window.ethereum);
- 
+export const getWebIrys = async (provider) => {
 	const network = process.env.REACT_APP_IRYS_URL;
 	const token = process.env.REACT_APP_IRYS_TOKEN;
 
