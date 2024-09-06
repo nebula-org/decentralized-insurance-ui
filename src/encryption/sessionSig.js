@@ -1,13 +1,11 @@
-import {ethers} from "ethers";
 import {
-  LitAccessControlConditionResource,
-  LitAbility,
   createSiweMessageWithRecaps,
-  generateAuthSig,
+  generateAuthSig
 } from "@lit-protocol/auth-helpers";
+import { litNodeClient } from "./litnode";
 
 
-  export const getSessionSignatures = async (litNodeClient, signer, walletAddress) => {
+  export const getSessionSignatures = async (signer, walletAddress) => {
    
   
      // Get the latest blockhash
@@ -38,7 +36,7 @@ import {
         litNodeClient: litNodeClient,
       });
       }catch(e) {
-        console.log("Error in signing: ", e)
+        console.log(e)
       }
   
       let authSig;
@@ -49,7 +47,7 @@ import {
         toSign,
       });
       }catch(e) {
-        console.log("Error in retur auth sig: ", e)
+        console.log(e)
       }
   
        return authSig;
@@ -58,22 +56,17 @@ import {
 
      let sessionSigs;
      try {
-            // Get the session signatures
+      // Get the session signatures
       sessionSigs = await litNodeClient.getSessionSigs({
         chain: process.env.REACT_APP_CHAIN,
         expiration: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7 ).toISOString(), //  7 days
         resourceAbilityRequests: [],     
-        // resourceAbilityRequests: [
-        //     {
-        //         resource: new LitAccessControlConditionResource("*"),
-        //         ability: LitAbility.AccessControlConditionDecryption,
-        //       },
-        // ],
+
         authNeededCallback,
-       //  capacityDelegationAuthSig,
+      
     });
      } catch(e) {
-        console.log("Error in ssssion sig: ", e)
+        console.log(e)
      }
  
      return sessionSigs;

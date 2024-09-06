@@ -1,22 +1,36 @@
 import { LitNodeClient } from '@lit-protocol/lit-node-client';
 import { LitNetwork } from '@lit-protocol/constants';
 
+export const litNodeClient = new LitNodeClient({
+    litNetwork: LitNetwork.DatilDev,
+    debug: false
+  });
+
+export const disconnectLit = async () => {
+    await litNodeClient.disconnect()
+    console.log("Disconnected lit!")
+}
+
+export const connectLit = async () => {
+    await litNodeClient.connect()
+    console.log("Connected lit!")
+}
 
 // Returns a configured Lit node object
-export const getLitNodeClient = async () => {
+const getLitNodeClient = async () => {
     try {
         // Initialize LitNodeClient
         const litNodeClient = new LitNodeClient({
             litNetwork: LitNetwork.DatilDev,
             debug: false
           });
-        await litNodeClient.disconnect();
-        await litNodeClient.connect();
-        console.log("conencted to lit ")
+        await disconnectLit();
+        await connectLit();
+       
 	    return litNodeClient;
 
     } catch(err) {
-        console.log("Error in connecting to Lit:", err)
+        console.log(err)
     }
 	
 }

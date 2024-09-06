@@ -77,3 +77,12 @@
 
 
 }
+
+.blur-text {
+    color: transparent;
+    text-shadow: 0 0 8px #fff;
+}
+
+.ant-modal-footer .ant-btn {
+    box-shadow: none;
+}

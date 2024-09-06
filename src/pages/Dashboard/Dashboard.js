@@ -9,10 +9,11 @@ import InsuranceItem from '../../components/InsuranceItem/InsuranceItem.js';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import ClaimDetails from '../ClaimDetails/ClaimDetails.js';
-import "./Dashboard.css";
 import axios from 'axios';
 import EncryptedInsuranceItem from '../../components/InsuranceItem/EncryptedInsuranceItem.js';
+import ClaimDetails from '../ClaimDetails/ClaimDetails.js';
+import "./Dashboard.css";
+
 
 
 const { Header, Sider, Content } = Layout;
@@ -25,7 +26,7 @@ const Dashboard = () => {
 
     const location = useLocation();
     const navigate = useNavigate()
-    console.log("currentRoute: ", location.pathname)
+    
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -36,7 +37,7 @@ const Dashboard = () => {
         const fetchPolicies = async () => {
             try {
                 const res = await axios.get('http://localhost:3001/policies')
-                console.log(res.data)
+                
                 if (res && res.data && res.data.users) {
                 setInsurances(res.data.users)
                 }
@@ -54,12 +55,10 @@ const Dashboard = () => {
         }
     }, [])
 
-    useEffect(() => {
-        console.log("selected menu ", selectedMenu)
-    }, [selectedMenu])
+   
 
     useEffect(() => {
-        console.log("Location is ", location)
+       
         if (location) {
             if (location.pathname == '/policies') {
                 setSelectedMenu('2')
@@ -112,7 +111,10 @@ const Dashboard = () => {
             case '1':
                 return <div></div>
             case '2':
-                return <div className='page-title'>All Policies</div>
+                return <div className='page-title'>
+                    <h2>All Policies</h2>
+                    {/* <Button type="default" size="large">Show My Policies</Button> */}
+                </div>
             case '3':
                 return <div className='page-title'>Claims</div>
             default:
@@ -127,9 +129,16 @@ const Dashboard = () => {
             case '2':
                 return <>
                     {
-                        insurances.map(insurance => {
-                            return <EncryptedInsuranceItem key={insurance.id} data={insurance} />
-                        })
+                        !insurances.length ? <div><h3>No policies are available</h3></div> : (
+                            <>
+                            {insurances.map(insurance => {
+                            return (
+                                <EncryptedInsuranceItem key={insurance.id} data={insurance} />
+                            )
+                            })}
+                            
+                            </>
+                        )
                     }
                 </>
             case '3':

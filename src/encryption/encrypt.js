@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 import {getAuthSig } from "./authsig.js";
 import { getAccessControlConditions } from "./accesscontrols.js";
-import { getLitNodeClient } from "./litnode.js";
+import { getLitNodeClient, litNodeClient } from "./litnode.js";
 
 const getSigner = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -20,13 +20,15 @@ const getSigner = async () => {
 export const encryptData = async (signer, walletAddress, dataToEncrypt, statement) => {
     // const signer = await getSigner();
     // const walletAddress = signer.address;
-    const litNodeClient = await getLitNodeClient();
-    console.log("LT ", litNodeClient)
-    if (!litNodeClient) {
+    // const litNodeClient = await getLitNodeClient();
+    
+    const client = litNodeClient
+    if (!client) {
         return
     }
+  
 
-	const authSig = await getAuthSig(litNodeClient, signer, walletAddress, statement);
+	const authSig = await getAuthSig(signer, walletAddress, statement);
 	const accessControlConditions = getAccessControlConditions(walletAddress);
 	
 	const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptString(
@@ -36,8 +38,8 @@ export const encryptData = async (signer, walletAddress, dataToEncrypt, statemen
 			dataToEncrypt: dataToEncrypt,
 			chain: process.env.REACT_APP_CHAIN
 		},
-		litNodeClient,
+		client,
 	);
-    await litNodeClient.disconnect()
+    await client.disconnect()
 	return [ciphertext, dataToEncryptHash];
 }

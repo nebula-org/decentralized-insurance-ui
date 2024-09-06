@@ -1,13 +1,17 @@
-import { Card, Col, Row } from "antd";
-import React, { useEffect, useState } from 'react';
+import { Card, Col, Collapse, Modal, Row } from "antd";
+
 import { ethers } from 'ethers';
+import React, { useState } from 'react';
 import ContentTile from '../ContentTile/ContentTile.js';
 
 import { useNavigate } from 'react-router-dom';
+import { decryptData } from "../../encryption/decrypt.js";
 import ClaimTracker from '../ClaimTracker/ClaimTracker.js';
 import NBButton from '../NBButton/NBButton.js';
 import "./InsuranceItem.css";
-import { decryptData } from "../../encryption/decrypt.js";
+import { disconnectLit, connectLit } from "../../encryption/litnode.js";
+
+const { Panel } = Collapse;
 
 const Icon = (props) => {
     const { className } = props
@@ -23,55 +27,60 @@ const EncryptedInsuranceItem = ({ withClaimTracker, noBorder, data }) => {
     const [authorized, setAuthroized] = useState(false)
     const [decrypting, setDecrypting] = useState(false)
     const [authError, setAuthError] = useState('')
+   
+   
 
     const fetchFromIrys = async () => {
+        if (decrypting) return
         setDecrypting(true)
+        setAuthError('')
+        setAuthroized(false)
+        setInfo(null)
         const url = `${process.env.REACT_APP_IRYS_GATEWAY}${data.resourceAddress}`;
         const result = await fetch(url)
-        console.log("results: ", result)
+       
         if (result && result.body) {
             const data = await result.json()
-            console.log("Data: ", data)
+           
             //decrypt
             if (data) {
+               
                 try {
                     const provider = new ethers.providers.Web3Provider(window.ethereum)
                     await provider.send('eth_requestAccounts', [])
-                    const signer = await provider.getSigner();
+                    const signer = provider.getSigner();
                     if (!provider || !signer) return;
                     const walletAddress =  await signer.getAddress()
+                    await connectLit();
                     const decryptedInfo = await decryptData(data, signer, walletAddress, 'Decrypt message' )
                 if (decryptedInfo) {
                     const info = JSON.parse(decryptedInfo)
-                    console.log("Info: ", info)
+                    
                     setAuthroized(true)
                     setInfo(info)
                     setDecrypting(false)
                     setAuthError('')
-                } else {
-                    setDecrypting(false)
-                    setAuthError('')
-                }
+                } 
                 } catch(e) {
+                   
                     setDecrypting(false)
                     setAuthroized(false)
+                    setInfo(null)
+                    console.log(e)
+                   
                     if (e.status === 401) {
-                        setAuthError('You are not allowed to do this operation')
-                        alert('You are not allowed to do this operation')
+                        setAuthError("You are not allowed to perform this operation")
+                        // alert('You are not allowed to do this operation')
                     } else {
-                        setAuthError('')
+                        setAuthError(e.message)
                     }
                     
-                    console.log("Decrytion error: ", e)
+                    
+                } finally {
+                    await disconnectLit()
                 }
-            } else {
-                setDecrypting(false)
-                setAuthError('')
-            }
-        } else {
-            setDecrypting(false)
-            setAuthError('')
-        }
+            } 
+        } 
         
     }
 
@@ -89,12 +98,24 @@ const EncryptedInsuranceItem = ({ withClaimTracker, noBorder, data }) => {
     }
     return (
         <div className='NB-Insurance-Item'>
+               <Modal
+          title="Alert"
+          open={authError}
+          onOk={() => setAuthError('')}
+          onCancel={() => setAuthError('')}
+        >
+           <Card title="" bordered={false} className='card-style gradient-bg'
+                style={{ width: '100%', border: '2px solid #2D2C32' }}>
+                    <p>{authError}</p>
+                </Card>
+        </Modal>
             <Card title="" bordered={false} className='card-style gradient-bg'
                 style={{ width: '100%', border: '2px solid #2D2C32', borderRadius: noBorder ? 0 : '' }}>
                 {authorized && info ? (
                     <>
-
-<Card title="" className="gradient-bg"
+                    <Collapse accordion>
+                    <Panel key={data.id} header="Policy Details">
+                    <Card title="" className="gradient-bg"
                           style={{ width: '100%', border: '2px solid #2D2C32', marginTop: '1rem' }}
                         >
                         <Row align={"stretch"}>
@@ -165,13 +186,17 @@ const EncryptedInsuranceItem = ({ withClaimTracker, noBorder, data }) => {
 
                     </Row>
                         </Card>
+                    </Panel>
+                    </Collapse>
+
+
 
                     
                             </>
                 ): (
                     <Row align={"stretch"}>
               
-              <NBButton
+              {/* <NBButton
                                     loading={decrypting}
                                     disabled={decrypting}
                                     style={{ width: '50%', marginLeft: 'auto', marginRight: 'auto' }}
@@ -179,7 +204,49 @@ const EncryptedInsuranceItem = ({ withClaimTracker, noBorder, data }) => {
                                     classes="btn-gradient"
                                     shape='round' size='large' type='primary'
                                     btnStyle={{ boxShadow: 'none', width: '100%' }}
-                                >Show Data</NBButton>
+                                >Show Data</NBButton> */}
+
+<Card title="" className="gradient-bg"
+                          style={{ width: '100%', border: '2px solid #2D2C32', marginTop: '1rem' }}
+                        >
+                        <Row align={"stretch"}>
+                        <Col span={20}>
+                            <Row align={"stretch"}>
+                            <Col span={4}>
+                            <span className="blur-text">Lorem ipsum ipsum lorem</span>
+                        </Col>
+                        <Col span={4}>
+                        <span className="blur-text">Lorem ipsum ipsum lorem</span>
+                        </Col>
+                        <Col span={4}>
+                        <span className="blur-text">Lorem ipsum ipsum lorem</span>
+                        </Col>
+                        <Col span={4}>
+
+                        <span className="blur-text">Lorem ipsum ipsum lorem</span>
+                        </Col>
+                        <Col span={4}>
+                        <span className="blur-text">Lorem ipsum ipsum lorem</span>
+                        </Col>
+                        <Col>
+                        <span className="blur-text">Lorem ipsum ipsum lorem</span>
+                        </Col>
+                            </Row>
+                        </Col>
+                        <Col span={4}>
+                        <NBButton
+                                    loading={decrypting}
+                                    // disabled={decrypting}
+                                    style={{ width: '50%', marginLeft: 'auto', marginRight: 'auto', borderRadius: 10 }}
+                                    handleClick={fetchFromIrys}
+                                    classes="btn-gradient"
+                                    size='large' type='primary'
+                                    btnStyle={{ boxShadow: 'none', width: '100%', borderRadius: 10 }}
+                                >View</NBButton>
+                        </Col>
+
+                    </Row>
+                        </Card>
                 </Row>
                 )}
             </Card>

@@ -28,10 +28,10 @@ const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
         const fetchFromIrys = async () => {
             const url = `${process.env.REACT_APP_IRYS_GATEWAY}${data.resourceAddress}`;
             const result = await fetch(url)
-            console.log("results: ", result)
+            
             if (result && result.body) {
                 const data = await result.json()
-                console.log("Data: ", data)
+                
                 //decrypt
                 if (data) {
                     try {
@@ -43,10 +43,10 @@ const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
                         const decryptedInfo = await decryptData(data, signer, walletAddress, 'Decrypt message' )
                     if (decryptedInfo) {
                         const info = JSON.parse(decryptedInfo)
-                        console.log("Info: ", info)
+                       
                     }
                     } catch(e) {
-                        console.log("Decrytion error: ", e)
+                        console.log(e)
                     }
                 }
             }

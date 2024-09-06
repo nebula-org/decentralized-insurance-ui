@@ -15,12 +15,13 @@ const ethAddressSchema = z.string()
 const WalletConnect = () => {
     const navigate = useNavigate()
     const [address, setAddress] = useState("")
-    // const [provider, setProvider] = useState(null);
-    // const [signer, setSigner] = useState(null);
+
 
     const localStorageSetHandler = e => {
-        console.log("local : ", e)
-        setAddress(e.value)
+        if (e.key == 'address'){
+            setAddress(e.value)
+        }
+       
     }
     useEffect(() => {
         document.addEventListener("itemInserted", localStorageSetHandler, false);
@@ -74,6 +75,7 @@ const WalletConnect = () => {
 
 
     const connect = async () => {
+        localStorage.clear()
         if (!window.ethereum) {
             alert("install metamask extension!!");
             return;
@@ -97,7 +99,7 @@ const WalletConnect = () => {
 
         const addr = event.target.value;
 
-        console.log("address ", addr)
+       
         setAddress(addr)
 
     }

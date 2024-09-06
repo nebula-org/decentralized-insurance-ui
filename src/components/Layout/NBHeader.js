@@ -15,8 +15,10 @@ const NBHeader = () => {
     const [isCopied, setIsCopied] = useState(false)
 
     const localStorageSetHandler = e => {
-        console.log("local : ", e)
-        setAddress(e.value)
+        if (e.key == 'address'){
+            setAddress(e.value)
+        }
+        
     }
 
     useEffect(() => {
@@ -39,7 +41,7 @@ const NBHeader = () => {
 
     const renderddress = () => {
 
-        return address ? address.slice(0, 8) + "..." + address.slice(address.length - 4) : ''
+        return <span>{address ? address.slice(0, 8) + "..." + address.slice(address.length - 4) : ''}</span>
     }
 
     const copyAddress = async () => {
@@ -59,19 +61,21 @@ const NBHeader = () => {
     }
 
     const handleClick = async () => {
-        if (address) {
-            return;
-        }
+        // if (address) {
+        //     return;
+        // }
+        console.log("clicked")
 
         await connect()
     }
 
     const connect = async () => {
+        localStorage.clear()
         if (!window.ethereum) {
             alert("install metamask extension!!");
             return;
         }
-        console.log("meta mask")
+        
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const res = await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner()

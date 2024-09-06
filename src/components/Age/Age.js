@@ -13,13 +13,13 @@ const Age = (props) => {
 
 
     const onChangeComplete = (value) => {
-        console.log('onChangeComplete: ', value);
+       
         if (handleAge) {
             handleAge(value)
         }
     };
     const onChange = (value) => {
-        console.log('onChange: ', value);
+       
         setValue(value)
     };
     return (

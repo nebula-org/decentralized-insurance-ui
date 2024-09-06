@@ -19,6 +19,7 @@ import PRODUCT_ABI from "../../ethereum/abi/Product.json";
 import ERC20_ABI from "../../ethereum/abi/USDC.json";
 import { storeOnIrys } from '../../encryption/storeOnIrys.js';
 import axios from 'axios';
+import { connectLit, disconnectLit } from '../../encryption/litnode.js';
 
 
 // Example USDC token address on Arbitrum or Sepolia
@@ -74,7 +75,7 @@ const BasicDetails = () => {
   })
 
   useEffect(() => {
-    console.log("details ", details)
+   
   }, [details])
 
   useEffect(() => {
@@ -150,11 +151,11 @@ const BasicDetails = () => {
 
   const checkBalance = async (tokenContract, required) => {
     try {
-      console.log("wallet: ", walletAddress)
+      
       const addr = ethers.utils.getAddress(walletAddress)
       const balanceBig = await tokenContract.balanceOf(addr)
       const balance = ethers.utils.formatUnits(balanceBig, 6)
-      console.log("balance: ", balance)
+      
       if (balance < required) {
         throw Error("Not enough balance tokens")
       }
@@ -197,7 +198,7 @@ const BasicDetails = () => {
       await checkBalance(tokenContract, approveAmount)
 
       const enoughAllowance = await checkAllowance(tokenContract, approveAmount)
-      console.log("allowance: ", enoughAllowance)
+      
 
       if (enoughAllowance) {
         alert("Already approved");
@@ -206,7 +207,7 @@ const BasicDetails = () => {
         return
       }
       const tx = await tokenContract.approve(TREASURY, ethers.utils.parseUnits(`${approveAmount}`, 6));
-      console.log("ethers ", tx)
+      
       await tx.wait();
       alert("Approval successful!");
       setIsApproving(false)
@@ -230,25 +231,20 @@ const BasicDetails = () => {
       setBuyingPolicy(true)
       try {
         const dataToEncrypt = JSON.stringify(details)
+        await connectLit()
         const [ciphertext, dataToEncryptHash] = await encryptData(signer, walletAddress, dataToEncrypt, 'My PI data')
-        console.log("Cipher and hash: ", ciphertext, " : hash:  " , dataToEncryptHash)
+       
 
         if (ciphertext && details.nominee) {
-          // const response = await axios.post('http://localhost:3001/store', {
-          //   ciphertext, 
-          //   dataToEncryptHash, 
-          //   ownerAddress: walletAddress, 
-          //   nomineeAddress: details.nominee.address
-          // })
-          // console.log("Response: ", response)
+      
           const encryptedDID = await storeOnIrys(provider, ciphertext, dataToEncryptHash, walletAddress, details.nominee.address)
-          console.log("Data id: ", encryptedDID)
+          
           if (encryptedDID) {
             const response = await axios.post('http://localhost:3001/policies', {
               encryptedDID
     
               })
-              console.log("Response: ", response)
+              
               if (response && response.data && response.data.success) {
                 setBuyingPolicy(false)
                 navigate("/success")
@@ -265,7 +261,9 @@ const BasicDetails = () => {
         }
       } catch(err) {
         setBuyingPolicy(false)
-        console.log("Error in encrypting pi data: ", err)
+        console.log(err)
+      } finally {
+        await disconnectLit()
       }
       // navigate("/success")
       return
@@ -302,13 +300,7 @@ const BasicDetails = () => {
     nominee, sumInsured,
     premium,
     event) => {
-    console.log("Created")
-    console.log(processId)
-    console.log(policyHolder)
-    console.log("nominee ", nominee)
-    console.log("insured ", sumInsured)
-    console.log("premium ", premium)
-    console.log(event)
+   
 
     // show success page
     // show details
@@ -324,11 +316,7 @@ const BasicDetails = () => {
 
   const logNebulaApplicationRejected = (processId,
     policyHolder, premium) => {
-    console.log("Rejected")
-    console.log(processId)
-    console.log(policyHolder)
-
-    console.log("premium ", premium)
+    
   }
 
 

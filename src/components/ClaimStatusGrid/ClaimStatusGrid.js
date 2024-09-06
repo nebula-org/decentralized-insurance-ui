@@ -6,7 +6,7 @@ import "./ClaimStatusGrid.css"
 import { claimTrackerStages } from '../../utils/content.js'
 
 const handleAction = (text) => {
-    console.log(text)
+    
 }
 
 const historyColumns = [

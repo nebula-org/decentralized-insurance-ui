@@ -1,5 +1,6 @@
 
 import { SiweMessage } from 'siwe';
+import { litNodeClient } from './litnode';
 
 // import { getLitNodeClient } from "./litnode.js";
 
@@ -21,8 +22,7 @@ function isValidURI(uri) {
     // const scheme = window.location.protocol.slice(0, -1);
     // const domain = window.location.host;
     // const origin = window.location.origin;
-    console.log("scheme domain origin ", scheme, domain, origin)
-    console.log("origin: valid:", isValidURI(origin), isValidURI(domain))
+    
 
     if (!isValidURI(origin) || !isValidURI(domain)) {
         return
@@ -44,27 +44,22 @@ function isValidURI(uri) {
 }
 
   
-export const getAuthSig = async (litNodeClient, wallet, address, statement = 'My PI data') => {
-	try {
-        // const litNodeClient = await getLitNodeClient();
-
+export const getAuthSig = async (wallet, address, statement = 'My PI data') => {
+    const chachedValue = localStorage.getItem('authSig')
+ 
+    if (chachedValue) {
+        return JSON.parse(chachedValue)
+    }
+	
 	let nonce = await litNodeClient.getLatestBlockhash();
 
-	// Initialize the signer
-	// const wallet = await getSigner();
-	// const address = wallet.address;
-
-	// Craft the SIWE message
-	// const statement = "My transaction";
 	const messageToSign = createSiweMessage(address, statement, nonce);
 
 	// Sign the message and format the authSig
     let signature
-	try {
-        signature = await wallet.signMessage(messageToSign);
-    }catch(e) {
-        console.log("error ins igning: ", e)
-    }
+	
+    signature = await wallet.signMessage(messageToSign);
+    
 
     if (!signature){
         return
@@ -77,8 +72,8 @@ export const getAuthSig = async (litNodeClient, wallet, address, statement = 'My
 		address: address,
 	};
 
+    localStorage.setItem('authSig', JSON.stringify(authSig))
+
 	return authSig;
-    } catch(err) {
-        console.log("Error in getting auth sig: ", err)
-    }
+    
 }
