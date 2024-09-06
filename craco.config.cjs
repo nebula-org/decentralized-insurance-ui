@@ -15,9 +15,14 @@ module.exports = {
         
       };
 
+      webpackConfig.resolve.alias = {
+        "react/jsx-dev-runtime.js": "react/jsx-dev-runtime",
+        "react/jsx-runtime.js": "react/jsx-runtime",
+      }
+
 
       // Add ProvidePlugin to make Buffer available globally
-      const webpack = require('webpack');
+   
       webpackConfig.plugins = [
         ...webpackConfig.plugins,
         new webpack.ProvidePlugin({
@@ -27,7 +32,16 @@ module.exports = {
       ];
 
        // Ensure all `mjs` files are properly resolved
-       webpackConfig.resolve.extensions = ['.js', '.jsx', '.mjs', '.json'];
+       webpackConfig.resolve.extensions = ['.js', '.jsx', '.mjs', '.json', '.cjs'];
+       webpackConfig.module.rules = [
+        ...webpackConfig.module.rules,
+        {
+          test: /\.m?js$/,
+          resolve: {
+            fullySpecified: false
+          },
+        },
+       ]
 
       return webpackConfig;
     }

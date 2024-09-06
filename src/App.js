@@ -1,6 +1,6 @@
 import { ConfigProvider } from 'antd';
 import './App.css';
-import AppLanding from './pages/AppLanding/AppLanding';
+import AppLanding from './pages/AppLanding/AppLanding.js';
 
 
 

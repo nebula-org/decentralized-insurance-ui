@@ -2,7 +2,7 @@ import React from 'react'
 
 
 import "./Banner.css";
-import Stat from '../Stat/Stat';
+import Stat from '../Stat/Stat.js';
 
 const STATS = [
     {

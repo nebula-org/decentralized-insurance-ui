@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import React from 'react';
-import WalletConnect from '../WalletConnect/WalletConnect';
+import WalletConnect from '../WalletConnect/WalletConnect.js';
 import "./Table.css";
 
 const columns = [

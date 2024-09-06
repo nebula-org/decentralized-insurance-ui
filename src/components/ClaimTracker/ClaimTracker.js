@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Steps, Card } from 'antd'
-import { claimTrackerStages } from '../../utils/content'
+import { claimTrackerStages } from '../../utils/content.js'
 
 import "./ClaimTracker.css"
 

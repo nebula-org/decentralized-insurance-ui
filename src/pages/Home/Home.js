@@ -3,8 +3,8 @@ import { Col, Row } from 'antd';
 
 
 
-import Banner from '../../components/Banner/Banner';
-import Table from '../../components/Table/Table';
+import Banner from '../../components/Banner/Banner.js';
+import Table from '../../components/Table/Table.js';
 
 import "./Home.css"
 

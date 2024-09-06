@@ -1,6 +1,6 @@
 import { Tabs } from 'antd';
 import React from 'react';
-import { basiDetailsTabItems } from '../../utils/content';
+import { basiDetailsTabItems } from '../../utils/content.js';
 
 import "./Tabs.css"
 

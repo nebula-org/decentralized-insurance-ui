@@ -38,5 +38,6 @@ export const encryptData = async (signer, walletAddress, dataToEncrypt, statemen
 		},
 		litNodeClient,
 	);
+    await litNodeClient.disconnect()
 	return [ciphertext, dataToEncryptHash];
 }

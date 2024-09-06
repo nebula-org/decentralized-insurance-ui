@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Card, Table, Tabs, Steps } from 'antd'
-import ContentTile from '../ContentTile/ContentTile'
+import ContentTile from '../ContentTile/ContentTile.js'
 
 import "./ClaimStatusGrid.css"
-import { claimTrackerStages } from '../../utils/content'
+import { claimTrackerStages } from '../../utils/content.js'
 
 const handleAction = (text) => {
     console.log(text)

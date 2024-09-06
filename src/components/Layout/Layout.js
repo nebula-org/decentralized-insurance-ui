@@ -5,13 +5,13 @@ import {
     RouterProvider,
 } from "react-router-dom";
 
-import ClaimApology from '../../pages/ClaimApology/ClaimApology';
-import ClaimProcessingFee from '../../pages/ClaimApology/ClaimProcessingFee';
-import Dashboard from '../../pages/Dashboard/Dashboard';
-import BasicDetails from '../../pages/Details/BasicDetails';
-import Home from '../../pages/Home/Home';
-import Success from '../../pages/Success/Success';
-import NBHeader from './NBHeader';
+import ClaimApology from '../../pages/ClaimApology/ClaimApology.js';
+import ClaimProcessingFee from '../../pages/ClaimApology/ClaimProcessingFee.js';
+import Dashboard from '../../pages/Dashboard/Dashboard.js';
+import BasicDetails from '../../pages/Details/BasicDetails.js';
+import Home from '../../pages/Home/Home.js';
+import Success from '../../pages/Success/Success.js';
+import NBHeader from './NBHeader.js';
 
 export const router = createBrowserRouter([
     {

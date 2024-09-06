@@ -2,7 +2,7 @@ import React from 'react'
 import { Select } from 'antd';
 
 import "./Education.css";
-import { educationQualification } from '../../utils/education';
+import { educationQualification } from '../../utils/education.js';
 
 const Education = (props) => {
 

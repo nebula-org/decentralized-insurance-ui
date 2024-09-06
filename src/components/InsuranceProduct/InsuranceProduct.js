@@ -2,8 +2,8 @@ import React, { useContext } from 'react'
 import { Card, Tag } from 'antd'
 
 import "./InsuranceProduct.css";
-import { BasicDetailsContext } from '../../pages/Details/BasicDetails';
-import IconContainer from '../IconContainer/IconContainer';
+import { BasicDetailsContext } from '../../pages/Details/BasicDetails.js';
+import IconContainer from '../IconContainer/IconContainer.js';
 
 const Icon = (props) => {
     const { className } = props

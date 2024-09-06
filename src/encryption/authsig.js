@@ -3,16 +3,34 @@ import { SiweMessage } from 'siwe';
 
 // import { getLitNodeClient } from "./litnode.js";
 
+function isValidURI(uri) {
+    try {
+      new URL(uri);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
 
 
   const createSiweMessage = (address, statement, nonce) => {
-    const scheme = window.location.protocol.slice(0, -1);
-    const domain = window.location.host;
-    const origin = window.location.origin;
+    const domain = "localhost:3000";
+	const origin = "http://localhost:3000/policies";
+    const scheme = 'http'
+    // const scheme = window.location.protocol.slice(0, -1);
+    // const domain = window.location.host;
+    // const origin = window.location.origin;
+    console.log("scheme domain origin ", scheme, domain, origin)
+    console.log("origin: valid:", isValidURI(origin), isValidURI(domain))
+
+    if (!isValidURI(origin) || !isValidURI(domain)) {
+        return
+    }
+
 	const expirationTime = new Date(Date.now() + 1000 * 60 * 60 * 24 * 21).toISOString();
     const message = new SiweMessage({
-        scheme,
+        // scheme,
         domain,
         address,
         statement,
@@ -41,7 +59,16 @@ export const getAuthSig = async (litNodeClient, wallet, address, statement = 'My
 	const messageToSign = createSiweMessage(address, statement, nonce);
 
 	// Sign the message and format the authSig
-	const signature = await wallet.signMessage(messageToSign);
+    let signature
+	try {
+        signature = await wallet.signMessage(messageToSign);
+    }catch(e) {
+        console.log("error ins igning: ", e)
+    }
+
+    if (!signature){
+        return
+    }
 
 	const authSig = {
 		sig: signature,

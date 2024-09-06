@@ -1,9 +1,8 @@
 import React from 'react';
 import "./Success.css";
-import TransactionDetails from '../../components/TransactonDetails/TransactionDetails';
-import PremiumDetails from '../../components/PremiumDetails/PremiumDetails';
-import IconContainer from '../../components/IconContainer/IconContainer';
-import { BackTop } from 'antd';
+import TransactionDetails from '../../components/TransactonDetails/TransactionDetails.js';
+import PremiumDetails from '../../components/PremiumDetails/PremiumDetails.js';
+import IconContainer from '../../components/IconContainer/IconContainer.js';
 
 const TITLE = "Congratulations! You have successfully secured your future with Nebula's Term Life Insurance!"
 const THANKS_NOTE = "Thank you for choosing us to provide you with the coverage you need."

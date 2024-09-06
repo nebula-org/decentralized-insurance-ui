@@ -1,5 +1,5 @@
 import React from 'react'
-import IconContainer from '../IconContainer/IconContainer'
+import IconContainer from '../IconContainer/IconContainer.js'
 
 import "./TitleHeader.css"
 

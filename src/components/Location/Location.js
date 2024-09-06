@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import "./Location.css";
 import { Input, Select } from 'antd';
-import { countryList } from '../../utils/countries';
+import { countryList } from '../../utils/countries.js';
 import postalCodes from "postal-codes-js"
 
 

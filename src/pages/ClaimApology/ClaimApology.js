@@ -1,12 +1,12 @@
 import React from 'react';
-import ClaimApologyHeader from '../../components/ClaimApologyHeader/ClaimApologyHeader';
+import ClaimApologyHeader from '../../components/ClaimApologyHeader/ClaimApologyHeader.js';
 
 import { Button, Col, Row } from 'antd';
-import ClaimInsuranceItem from '../../components/ClaimInsuranceItem/ClaimInsuranceItem';
-import ClaimSteps from '../../components/ClaimSteps/ClaimSteps';
+import ClaimInsuranceItem from '../../components/ClaimInsuranceItem/ClaimInsuranceItem.js';
+import ClaimSteps from '../../components/ClaimSteps/ClaimSteps.js';
 import "./ClaimApology.css";
 import { useNavigate } from 'react-router-dom';
-import NBButton from '../../components/NBButton/NBButton';
+import NBButton from '../../components/NBButton/NBButton.js';
 
 
 const ClaimApology = () => {

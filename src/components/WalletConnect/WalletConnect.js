@@ -5,7 +5,7 @@ import { z } from "zod";
 import "./WalletConnect.css";
 import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
-import NBButton from '../NBButton/NBButton';
+import NBButton from '../NBButton/NBButton.js';
 
 const ethAddressSchema = z.string()
     .refine((value) => ethers.utils.isAddress(value), {
@@ -18,9 +18,18 @@ const WalletConnect = () => {
     // const [provider, setProvider] = useState(null);
     // const [signer, setSigner] = useState(null);
 
+    const localStorageSetHandler = e => {
+        console.log("local : ", e)
+        setAddress(e.value)
+    }
     useEffect(() => {
+        document.addEventListener("itemInserted", localStorageSetHandler, false);
         if (localStorage.getItem('address')) {
             setAddress(localStorage.getItem('address'))
+        }
+
+        return () => {
+            document.removeEventListener('itemInserted', localStorageSetHandler)
         }
 
     }, [])

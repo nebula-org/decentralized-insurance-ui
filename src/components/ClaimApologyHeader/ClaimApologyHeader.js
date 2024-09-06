@@ -1,7 +1,7 @@
 import React from 'react'
 
 import "./ClaimApologyHeader.css";
-import TitleHeader from '../ClaimHeader/TitleHeader';
+import TitleHeader from '../ClaimHeader/TitleHeader.js';
 
 const innerIconStyle = {
     height: '3.5rem',

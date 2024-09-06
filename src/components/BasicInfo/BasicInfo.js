@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Steps, Col, Row } from 'antd';
-import { basicInfoStepItems } from '../../utils/content'
-import Gender from '../Gender/Gender';
-import Age from '../Age/Age';
-import Location from '../Location/Location';
-import Occupation from '../Occupation/Occupation';
-import MonthlyIncome from '../MonthlyIncome/MonthlyIncome';
-import Education from '../Education/Education';
-import { BasicDetailsContext } from '../../pages/Details/BasicDetails';
+import { basicInfoStepItems } from '../../utils/content.js'
+import Gender from '../Gender/Gender.js';
+import Age from '../Age/Age.js';
+import Location from '../Location/Location.js';
+import Occupation from '../Occupation/Occupation.js';
+import MonthlyIncome from '../MonthlyIncome/MonthlyIncome.js';
+import Education from '../Education/Education.js';
+import { BasicDetailsContext } from '../../pages/Details/BasicDetails.js';
 import "./BasicInfo.css"
 
 

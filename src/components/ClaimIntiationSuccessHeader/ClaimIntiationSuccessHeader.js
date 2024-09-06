@@ -1,5 +1,5 @@
 import React from 'react'
-import TitleHeader from '../ClaimHeader/TitleHeader'
+import TitleHeader from '../ClaimHeader/TitleHeader.js'
 
 
 const innerIconStyle = {

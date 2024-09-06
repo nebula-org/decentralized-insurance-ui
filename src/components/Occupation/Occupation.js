@@ -1,6 +1,6 @@
 import { Select } from 'antd';
 import React from 'react';
-import { jobList } from '../../utils/jobs';
+import { jobList } from '../../utils/jobs.js';
 
 import "./Occupation.css";
 

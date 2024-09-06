@@ -1,8 +1,8 @@
 import React from 'react'
 
 import "./ClaimDetails.css"
-import InsuranceItem from '../../components/InsuranceItem/InsuranceItem'
-import ClaimStatusGrid from '../../components/ClaimStatusGrid/ClaimStatusGrid'
+import InsuranceItem from '../../components/InsuranceItem/InsuranceItem.js'
+import ClaimStatusGrid from '../../components/ClaimStatusGrid/ClaimStatusGrid.js'
 
 const ClaimDetails = () => {
     return (

@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Card, Radio, Row, Col } from 'antd';
 
 import "./Payment.css"
-import InsuranceProduct from '../InsuranceProduct/InsuranceProduct';
-import { BasicDetailsContext } from '../../pages/Details/BasicDetails';
+import InsuranceProduct from '../InsuranceProduct/InsuranceProduct.js';
+import { BasicDetailsContext } from '../../pages/Details/BasicDetails.js';
 
 const Payment = () => {
     const { details, setDetails } = useContext(BasicDetailsContext)

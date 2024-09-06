@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 
 
-import { router } from './Layout';
+import { router } from './Layout.js';
 import "./NBHeader.css";
 
 
@@ -14,11 +14,20 @@ const NBHeader = () => {
     const [address, setAddress] = useState("")
     const [isCopied, setIsCopied] = useState(false)
 
+    const localStorageSetHandler = e => {
+        console.log("local : ", e)
+        setAddress(e.value)
+    }
+
     useEffect(() => {
+        document.addEventListener("itemInserted", localStorageSetHandler, false);
         if (localStorage.getItem('address')) {
             if (address != localStorage.getItem('address')) {
                 setAddress(localStorage.getItem('address'))
             }
+        }
+        return () => {
+            document.removeEventListener('itemInserted', localStorageSetHandler)
         }
 
     }, [])
@@ -62,7 +71,7 @@ const NBHeader = () => {
             alert("install metamask extension!!");
             return;
         }
-
+        console.log("meta mask")
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const res = await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner()

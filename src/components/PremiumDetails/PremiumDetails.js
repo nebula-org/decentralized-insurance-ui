@@ -3,7 +3,7 @@ import React from 'react'
 import { Card, Row, Col } from "antd"
 
 import "./PremiumDetails.css"
-import ContentTile from '../ContentTile/ContentTile'
+import ContentTile from '../ContentTile/ContentTile.js'
 
 const Icon = (props) => {
     const { className } = props

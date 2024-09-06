@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { Card, Row, Col } from 'antd'
-import ContentTile from '../ContentTile/ContentTile'
+import ContentTile from '../ContentTile/ContentTile.js'
 
 import "./Summary.css"
-import InsuranceProduct from '../InsuranceProduct/InsuranceProduct'
-import { BasicDetailsContext } from '../../pages/Details/BasicDetails'
+import InsuranceProduct from '../InsuranceProduct/InsuranceProduct.js'
+import { BasicDetailsContext } from '../../pages/Details/BasicDetails.js'
 
 export const Summary = () => {
     const { details } = useContext(BasicDetailsContext)

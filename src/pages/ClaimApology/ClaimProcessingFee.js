@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { Button } from 'antd'
-import ClaimInsuranceItem from '../../components/ClaimInsuranceItem/ClaimInsuranceItem'
-import ClaimDeposit from '../../components/ClaimDeposit/ClaimDeposit'
+import ClaimInsuranceItem from '../../components/ClaimInsuranceItem/ClaimInsuranceItem.js'
+import ClaimDeposit from '../../components/ClaimDeposit/ClaimDeposit.js'
 
 import "./ClaimProcessingFee.css"
-import ClaimTracker from '../../components/ClaimTracker/ClaimTracker'
+import ClaimTracker from '../../components/ClaimTracker/ClaimTracker.js'
 import { useNavigate } from 'react-router-dom'
-import ClaimIntiationSuccessHeader from '../../components/ClaimIntiationSuccessHeader/ClaimIntiationSuccessHeader'
-import NBButton from '../../components/NBButton/NBButton'
+import ClaimIntiationSuccessHeader from '../../components/ClaimIntiationSuccessHeader/ClaimIntiationSuccessHeader.js'
+import NBButton from '../../components/NBButton/NBButton.js'
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

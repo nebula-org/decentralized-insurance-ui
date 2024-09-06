@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
 import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     UploadOutlined,
     UserOutlined,
-    VideoCameraOutlined,
+    VideoCameraOutlined
 } from '@ant-design/icons';
-import { Button, Layout, Menu, theme } from 'antd';
-import InsuranceItem from '../../components/InsuranceItem/InsuranceItem';
+import { Layout, Menu, theme } from 'antd';
+import React, { useEffect, useState } from 'react';
+import InsuranceItem from '../../components/InsuranceItem/InsuranceItem.js';
 
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import "./Dashboard.css"
-import ClaimDetails from '../ClaimDetails/ClaimDetails';
+import ClaimDetails from '../ClaimDetails/ClaimDetails.js';
+import "./Dashboard.css";
+import axios from 'axios';
+import EncryptedInsuranceItem from '../../components/InsuranceItem/EncryptedInsuranceItem.js';
 
 
 const { Header, Sider, Content } = Layout;
 const Dashboard = () => {
-    const [insurances, setInsurances] = useState([1])
+    const [insurances, setInsurances] = useState([])
     const [claims, setClaims] = useState([1])
     const [collapsed, setCollapsed] = useState(false);
     const [selectedMenu, setSelectedMenu] = useState("2")
@@ -29,6 +29,30 @@ const Dashboard = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
+    useEffect(() => {
+        let ignore = false
+
+        const fetchPolicies = async () => {
+            try {
+                const res = await axios.get('http://localhost:3001/policies')
+                console.log(res.data)
+                if (res && res.data && res.data.users) {
+                setInsurances(res.data.users)
+                }
+            } catch(e) {
+                console.log(e)
+            }
+        }
+
+        if (!ignore) {
+            fetchPolicies()
+        }
+
+        return () => {
+            ignore = true
+        }
+    }, [])
 
     useEffect(() => {
         console.log("selected menu ", selectedMenu)
@@ -88,7 +112,7 @@ const Dashboard = () => {
             case '1':
                 return <div></div>
             case '2':
-                return <div className='page-title'>My Policies</div>
+                return <div className='page-title'>All Policies</div>
             case '3':
                 return <div className='page-title'>Claims</div>
             default:
@@ -104,7 +128,7 @@ const Dashboard = () => {
                 return <>
                     {
                         insurances.map(insurance => {
-                            return <InsuranceItem />
+                            return <EncryptedInsuranceItem key={insurance.id} data={insurance} />
                         })
                     }
                 </>

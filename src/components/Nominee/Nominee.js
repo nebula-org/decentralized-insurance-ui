@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
 import React from 'react'
-import InsuranceProduct from '../InsuranceProduct/InsuranceProduct'
-import AddNominee from './AddNominee'
+import InsuranceProduct from '../InsuranceProduct/InsuranceProduct.js'
+import AddNominee from './AddNominee.js'
 
 const Nominee = () => {
 

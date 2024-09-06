@@ -3,7 +3,7 @@ import { Card, Button } from "antd"
 
 import "./TransactionDetails.css"
 import { useNavigate } from 'react-router-dom'
-import NBButton from '../NBButton/NBButton'
+import NBButton from '../NBButton/NBButton.js'
 
 const TransactionDetails = ({ width }) => {
 

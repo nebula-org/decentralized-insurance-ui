@@ -1,8 +1,8 @@
 import React from 'react'
 import { Button, Card, Col, Row, Divider } from "antd"
-import IconContainer from '../IconContainer/IconContainer'
+import IconContainer from '../IconContainer/IconContainer.js'
 import "./ClaimInsuranceItem.css";
-import ProductTitle from '../ProductTitle/ProductTitle';
+import ProductTitle from '../ProductTitle/ProductTitle.js';
 
 const HandIcon = (props) => {
     const { className } = props

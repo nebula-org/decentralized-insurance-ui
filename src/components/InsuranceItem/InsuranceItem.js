@@ -1,11 +1,13 @@
-import React from 'react'
-import { Button, Card, Col, Row, Divider } from "antd"
-import ContentTile from '../ContentTile/ContentTile'
+import { Card, Col, Row } from "antd";
+import React, { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
+import ContentTile from '../ContentTile/ContentTile.js';
 
-import "./InsuranceItem.css"
-import { useNavigate } from 'react-router-dom'
-import ClaimTracker from '../ClaimTracker/ClaimTracker'
-import NBButton from '../NBButton/NBButton'
+import { useNavigate } from 'react-router-dom';
+import ClaimTracker from '../ClaimTracker/ClaimTracker.js';
+import NBButton from '../NBButton/NBButton.js';
+import "./InsuranceItem.css";
+import { decryptData } from "../../encryption/decrypt.js";
 
 const Icon = (props) => {
     const { className } = props
@@ -16,7 +18,58 @@ const Icon = (props) => {
     )
 }
 
-const InsuranceItem = ({ withClaimTracker, noBorder }) => {
+const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
+    const [info, setInfo] = useState()
+    const [notAuthorized, setNotAuthroized] = useState(false)
+
+    useEffect(() => {
+      
+        let ignore = false
+        const fetchFromIrys = async () => {
+            const url = `${process.env.REACT_APP_IRYS_GATEWAY}${data.resourceAddress}`;
+            const result = await fetch(url)
+            console.log("results: ", result)
+            if (result && result.body) {
+                const data = await result.json()
+                console.log("Data: ", data)
+                //decrypt
+                if (data) {
+                    try {
+                        const provider = new ethers.providers.Web3Provider(window.ethereum)
+                        await provider.send('eth_requestAccounts', [])
+                        const signer = await provider.getSigner();
+                        if (!provider || !signer) return;
+                        const walletAddress =  await signer.getAddress()
+                        const decryptedInfo = await decryptData(data, signer, walletAddress, 'Decrypt message' )
+                    if (decryptedInfo) {
+                        const info = JSON.parse(decryptedInfo)
+                        console.log("Info: ", info)
+                    }
+                    } catch(e) {
+                        console.log("Decrytion error: ", e)
+                    }
+                }
+            }
+            
+        }
+
+
+        if (!ignore) {
+            try {
+                fetchFromIrys()
+            }catch(e) {
+                console.log(e)
+            }
+        }
+
+        return () => {
+            ignore = true
+        }
+      
+     
+  
+    }, [data])
+
     const navigate = useNavigate()
 
     const handleClaim = () => {

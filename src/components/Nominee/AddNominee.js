@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Select, Input, Card } from 'antd';
 import { isAddress } from "ethereum-address"
 
-import { relationshipList } from '../../utils/relationship';
-import { BasicDetailsContext } from '../../pages/Details/BasicDetails'
+import { relationshipList } from '../../utils/relationship.js';
+import { BasicDetailsContext } from '../../pages/Details/BasicDetails.js'
 
 import "./AddNominee.css";
 

@@ -1,22 +1,24 @@
 import React, { createContext, useEffect, useState } from 'react';
 
-import NebulaTabs from '../../components/Tabs/Tabs';
+import NebulaTabs from '../../components/Tabs/Tabs.js';
 
-import BasicInfo from '../../components/BasicInfo/BasicInfo';
+import BasicInfo from '../../components/BasicInfo/BasicInfo.js';
 import "./BasicDetails.css";
 
-import InsuranceProduct from '../../components/InsuranceProduct/InsuranceProduct';
-import Nominee from '../../components/Nominee/Nominee';
-import Payment from '../../components/Payment/Payment';
-import { Summary } from '../../components/Summary/Summary';
+import InsuranceProduct from '../../components/InsuranceProduct/InsuranceProduct.js';
+import Nominee from '../../components/Nominee/Nominee.js';
+import Payment from '../../components/Payment/Payment.js';
+import { Summary } from '../../components/Summary/Summary.js';
 
 import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
 // Set up your contract address and ABI
-import NBButton from '../../components/NBButton/NBButton';
-import { encryptData } from '../../encryption/encrypt';
+import NBButton from '../../components/NBButton/NBButton.js';
+import { encryptData } from '../../encryption/encrypt.js';
 import PRODUCT_ABI from "../../ethereum/abi/Product.json";
 import ERC20_ABI from "../../ethereum/abi/USDC.json";
+import { storeOnIrys } from '../../encryption/storeOnIrys.js';
+import axios from 'axios';
 
 
 // Example USDC token address on Arbitrum or Sepolia
@@ -225,12 +227,35 @@ const BasicDetails = () => {
     if (!provider || !signer) return;
 
     if (test) {
+      setBuyingPolicy(true)
       try {
         const dataToEncrypt = JSON.stringify(details)
         const [ciphertext, dataToEncryptHash] = await encryptData(signer, walletAddress, dataToEncrypt, 'My PI data')
         console.log("Cipher and hash: ", ciphertext, " : hash:  " , dataToEncryptHash)
 
         if (ciphertext && details.nominee) {
+          // const response = await axios.post('http://localhost:3001/store', {
+          //   ciphertext, 
+          //   dataToEncryptHash, 
+          //   ownerAddress: walletAddress, 
+          //   nomineeAddress: details.nominee.address
+          // })
+          // console.log("Response: ", response)
+          const encryptedDID = await storeOnIrys(provider, ciphertext, dataToEncryptHash, walletAddress, details.nominee.address)
+          console.log("Data id: ", encryptedDID)
+          if (encryptedDID) {
+            const response = await axios.post('http://localhost:3001/policies', {
+              encryptedDID
+    
+              })
+              console.log("Response: ", response)
+              if (response && response.data && response.data.success) {
+                setBuyingPolicy(false)
+                navigate("/success")
+              }
+          }
+         
+     
           // TODO: call api
           // API to store data on irys
           // store data on mongodb  { address: owneraddress, resource: receipt.id, nominee: nomineeAddress }
@@ -239,6 +264,7 @@ const BasicDetails = () => {
           // client can decrypt only the ones he is allowed to
         }
       } catch(err) {
+        setBuyingPolicy(false)
         console.log("Error in encrypting pi data: ", err)
       }
       // navigate("/success")
