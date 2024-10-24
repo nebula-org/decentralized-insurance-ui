@@ -1,7 +1,7 @@
 import { getAccessControlConditions } from "./accesscontrols.js";
 import { getWebIrys } from "./irys.js";
 
-export const storeOnIrys = async (provider, cipherText, dataToEncryptHash, ownerAddress, nomineeAddress) => {
+export const storeOnIrys = async (provider, cipherText, dataToEncryptHash, ownerAddress, customtags = []) => {
     const irys = await getWebIrys(provider);
     const accessControlConditions = getAccessControlConditions(ownerAddress)
     let dataToUpload = {
@@ -13,6 +13,7 @@ export const storeOnIrys = async (provider, cipherText, dataToEncryptHash, owner
     const tags = [
         { name: "Content-Type", value: "application/json" },
         { name: "application-id", value: "nebula"},
+        ...customtags
         // { name: "owner", value: ownerAddress },
         // { name: "nominee", value: nomineeAddress }
     ];

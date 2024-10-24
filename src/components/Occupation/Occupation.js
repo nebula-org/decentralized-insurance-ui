@@ -3,6 +3,7 @@ import React from 'react';
 import { jobList } from '../../utils/jobs.js';
 
 import "./Occupation.css";
+import Fieldset from '../Fieldset/Fieldset.js';
 
 const Occupation = (props) => {
 
@@ -16,17 +17,19 @@ const Occupation = (props) => {
 
     return (
         <div className='NB-Basic-Info__occupation'>
-            <h2>What is your occupation?</h2>
+            <h2 style={{ textAlign: 'left' }}>What is your occupation?</h2>
             <div className='NB-Basic-Info__occupation__input'>
-                <Select
-                    size='large'
-                    value={occupation}
-                    optionFilterProp={optionFilterProp}
-                    showSearch
-                    placeholder={placeholder}
-                    onChange={onChange}
-                    options={jobList}
-                />
+                <Fieldset legend="Occupation">
+                    <Select
+                        size='large'
+                        value={occupation}
+                        optionFilterProp={optionFilterProp}
+                        showSearch
+                        placeholder={placeholder}
+                        onChange={onChange}
+                        options={jobList}
+                    />
+                </Fieldset>
             </div>
 
         </div>

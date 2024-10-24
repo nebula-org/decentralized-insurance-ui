@@ -43,3 +43,28 @@ export const encryptData = async (signer, walletAddress, dataToEncrypt, statemen
     await client.disconnect()
 	return [ciphertext, dataToEncryptHash];
 }
+
+export const encryptFile = async (signer, walletAddress, fileToEncrypt, statement) => {
+
+    const client = litNodeClient
+    if (!client) {
+        return
+    }
+  
+
+	const authSig = await getAuthSig(signer, walletAddress, statement);
+	const accessControlConditions = getAccessControlConditions(walletAddress);
+	
+	const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptFile(
+		{
+			authSig,
+			accessControlConditions,
+            file: fileToEncrypt,
+			chain: process.env.REACT_APP_CHAIN
+		},
+		client,
+	);
+    await client.disconnect()
+	return [ciphertext, dataToEncryptHash];
+}
+

@@ -1,19 +1,33 @@
 .NB-Basic-Info__location {}
 
 .NB-Basic-Info__location .ant-select {
-    width: 50% !important;
-    height: 3.5rem !important;
+    width: 100% !important;
+    /* height: 3.5rem !important; */
 }
 
 .NB-Basic-Info__location__country {
     display: flex;
+    justify-content: space-between;
+
 }
 
-.NB-Basic-Info__location__pincode {
+/* .NB-Basic-Info__location__pincode {
     margin-left: 1rem;
-    width: 40%
+    width: 100%;
+    padding-left: 1rem;
+} */
+
+/* .NB-Basic-Info__location__pincode input {
+    height: 100% !important;
+} */
+
+.NB-Basic-Info__location__country .ant-select .ant-select-selector {
+    outline: none;
+    border-color: transparent;
+
+    box-shadow: none;
 }
 
-.NB-Basic-Info__location__pincode input {
-    height: 100% !important;
+.NB-Basic-Info__location__country .ant-select .ant-select-selection-item {
+    text-align: left;
 }

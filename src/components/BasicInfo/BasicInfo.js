@@ -9,6 +9,9 @@ import MonthlyIncome from '../MonthlyIncome/MonthlyIncome.js';
 import Education from '../Education/Education.js';
 import { BasicDetailsContext } from '../../pages/Details/BasicDetails.js';
 import "./BasicInfo.css"
+import BinaryQuestion from '../BinaryQuestion/BinaryQuestion.js';
+import Covid19 from '../Covid19/Covid19.js';
+import Surgery from '../Surgery/Surgery.js';
 
 
 const BasicInfo = () => {
@@ -21,67 +24,103 @@ const BasicInfo = () => {
 
 
 
-  const handleGender = (value) => {
-    setDetails({ ...details, basicInfo: { ...details.basicInfo, gender: value } })
+  const handleCovid19 = (key, value) => {
+    setDetails({ ...details, healthInfo: { ...details.healthInfo, covid19: { ...details.healthInfo.covid19, [key]: value } } })
   }
 
-  const handleAge = (value) => {
-    setDetails({ ...details, basicInfo: { ...details.basicInfo, age: value } })
+  const handleNarcotics = (value) => {
+    setDetails({ ...details, healthInfo: { ...details.healthInfo, narcotics: value } })
   }
 
-  const handleCountry = (value) => {
-    setDetails({ ...details, basicInfo: { ...details.basicInfo, country: value, pincode: "" } })
+  const handleDiabetes = (value) => {
+    setDetails({ ...details, healthInfo: { ...details.healthInfo, diabetes: value } })
   }
 
-  const handlePin = (value) => {
-    setDetails({ ...details, basicInfo: { ...details.basicInfo, pincode: value } })
+  const handleArmed = (value) => {
+    setDetails({ ...details, healthInfo: { ...details.healthInfo, armed: value } })
   }
 
-  const handleOccupation = value => {
-    setDetails({ ...details, basicInfo: { ...details.basicInfo, occupation: value } })
-  }
-
-  const handleIncome = value => {
-    setDetails({ ...details, basicInfo: { ...details.basicInfo, income: value } })
+  const handleResidency = (value) => {
+    setDetails({ ...details, healthInfo: { ...details.healthInfo, residency: value } })
   }
 
 
-  const handleEducation = value => {
-    setDetails({ ...details, basicInfo: { ...details.basicInfo, education: value } })
-  }
+
 
   const renderContent = () => {
     switch (active + 1) {
       case 1:
-        return <Gender defaultValue="male" gender={details.basicInfo.gender} handleGender={handleGender} />
+        return <Covid19 handleCovid19={handleCovid19} covid19={details.healthInfo.covid19} />
+
       case 2:
-        return <Age min={18} max={65} step={1} defaultValue={18} age={details.basicInfo.age} handleAge={handleAge} />
+        return <Surgery />
       case 3:
-        return <Location
-          selectedVal={details.basicInfo.country}
-          pincode={details.basicInfo.pincode}
-          placeholder="Select country"
-          optionFilterProp="value"
-          handleCountry={handleCountry}
-          handlePin={handlePin}
+        return <BinaryQuestion
+          question={"Have you ever consumed narcotics?"}
+          answer={details.healthInfo.narcotics}
+          defaultValue="no"
+          handleAnswer={(answer) => handleNarcotics(answer)}
+
         />
       case 4:
-        return <Occupation
-          occupation={details.basicInfo.occupation}
-          placeholder="Select Occupation"
-          optionFilterProp="value"
-          handleOccupation={handleOccupation}
+        return <BinaryQuestion
+          question={"Are you Diabetic?"}
+          answer={details.healthInfo.diabetes}
+          defaultValue="no"
+          handleAnswer={(answer) => handleDiabetes(answer)}
+
         />
       case 5:
-        return <MonthlyIncome income={details.basicInfo.income} placeholder="Enter monthly income" handleIncome={handleIncome} />
-      case 6:
-        return <Education
-          education={details.basicInfo.education}
-          placeholder="Select Qualification"
-          handleEducation={handleEducation}
-          optionFilterProp="value"
+        return <BinaryQuestion
+          question={"Are you employed in the armed?"}
+          answer={details.healthInfo.armed}
+          defaultValue="no"
+          handleAnswer={(answer) => handleArmed(answer)}
+
         />
+
+      case 6:
+        return <BinaryQuestion
+          question={"Are you currently residing outside India?"}
+          answer={details.healthInfo.residency}
+          defaultValue="no"
+          handleAnswer={(answer) => handleResidency(answer)}
+
+        />
+
+
       default: return <></>
+    }
+  }
+
+  const isCovid19Filled = () => {
+    if (details.healthInfo.covid19.isPositive == "yes") {
+      return ["isHospitalized",
+        "recoveryDate", "diagnosisDate", "isHospitalized"].every(field => details.healthInfo.covid19[field])
+    }
+    return true
+  }
+
+  const isSurgeryFilled = () => {
+    if (details.healthInfo.surgery.hadSurgery == "yes") {
+      if (details.healthInfo.surgery.surgeryTypes.length == 0) return false
+      else return true
+    }
+    return true
+  }
+
+
+  const handleStepChange = nextActiveStep => {
+    if (active == 0) {
+      if (isCovid19Filled()) {
+        setActive(nextActiveStep)
+      }
+    } else if (active == 1) {
+      if (isSurgeryFilled()) {
+        setActive(nextActiveStep)
+      }
+    } else {
+      setActive(nextActiveStep)
     }
   }
   return (
@@ -92,7 +131,7 @@ const BasicInfo = () => {
             <div className="NB-Basic-Info__nav gradient-bg">
               <Steps
                 direction="vertical"
-                onChange={setActive}
+                onChange={(active) => handleStepChange(active)}
                 current={active}
                 items={steps}
               />

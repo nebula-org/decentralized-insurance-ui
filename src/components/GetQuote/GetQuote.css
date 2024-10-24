@@ -1,0 +1,65 @@
+.NB-Get-Quote .ant-card-body {
+    padding: 1rem !important;
+    padding-top: 0px !important;
+}
+
+.NB-Get-Quote .quotes {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+    width: 75%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.NB-Get-Quote .quotes .quote {
+
+    margin: 1rem;
+}
+
+.NB-Get-Quote .quotes .quote .term,
+.NB-Get-Quote .quotes .quote .sum {
+    text-align: left;
+}
+
+.NB-Get-Quote .quotes .quote .term {
+    margin-top: 1rem;
+}
+
+.NB-Get-Quote .quote-selector {
+    display: flex;
+    justify-content: end;
+}
+
+.NB-Get-Quote .quote-selector .circle {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    border: 1px solid #B28BFF;
+    cursor: pointer;
+}
+
+.NB-Get-Quote .quote-selector .circle-checked {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    border: 1px solid #B28BFF;
+    background-color: #B28BFF;
+    cursor: pointer;
+}
+
+.NB-Get-Quote__premium {
+    margin-top: 1rem;
+    background-color: #2B2A32;
+    font-weight: 700;
+    font-size: 1.125rem;
+    padding: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.NB-Get-Quote__premium span {
+    display: block;
+}

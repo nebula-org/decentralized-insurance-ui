@@ -4,6 +4,7 @@ import "./Location.css";
 import { Input, Select } from 'antd';
 import { countryList } from '../../utils/countries.js';
 import postalCodes from "postal-codes-js"
+import Fieldset from '../Fieldset/Fieldset.js';
 
 
 const Location = (props) => {
@@ -58,27 +59,52 @@ const Location = (props) => {
 
     return (
         <div className='NB-Basic-Info__location'>
-            <h2>Country of Residence</h2>
+            <h2 style={{ textAlign: 'left' }}>Country of Residence</h2>
             <div className='NB-Basic-Info__location__country'>
-                <Select
-                    size='large'
-                    value={selectedVal}
-                    showSearch
-                    placeholder={placeholder}
-                    optionFilterProp={optionFilterProp}
-                    onChange={onChange}
-                    // onSearch={onSearch}
-                    options={countryList}
-                />
-                {selectedVal && (
-                    <div className='NB-Basic-Info__location__pincode'>
-                        <Input placeholder='Enter Pincode' onChange={handleInputChange} value={input} />
-                        <div style={{ color: 'red' }}>{error}</div>
-                    </div>
-                )}
+
+                <div style={{ marginRight: '1rem', width: '50%' }}>
+                    <Fieldset legend={"Select Country"}>
+                        <Select
+                            dropdownStyle={{ textAlign: 'left' }}
+                            size='large'
+                            value={selectedVal}
+                            showSearch
+                            placeholder={placeholder}
+                            optionFilterProp={optionFilterProp}
+                            onChange={onChange}
+                            // onSearch={onSearch}
+                            options={countryList}
+                        />
+                    </Fieldset>
+                </div>
+
+                <div style={{ marginLeft: '1rem', width: '50%' }}>
+                    <Fieldset
+
+                        legend="Pincode"
+                    >
+                        <Input
+                            disabled={!selectedVal}
+                            style={{
+                                outline: 'none',
+                                boxShadow: 'none',
+                                borderColor: 'transparent'
+                            }}
+                            placeholder="Enter Pincode" onChange={handleInputChange} value={input} />
+
+                    </Fieldset>
+                </div>
+
+
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}>
+                <div style={{ marginRight: '1rem', width: '50%' }}></div>
+                <div style={{ color: "red", textAlign: "left", marginLeft: '1rem', width: '50%' }}>{error}</div>
             </div>
 
-        </div>
+        </div >
+
+
     )
 }
 

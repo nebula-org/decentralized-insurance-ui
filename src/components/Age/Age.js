@@ -13,18 +13,18 @@ const Age = (props) => {
 
 
     const onChangeComplete = (value) => {
-       
+
         if (handleAge) {
             handleAge(value)
         }
     };
     const onChange = (value) => {
-       
+
         setValue(value)
     };
     return (
         <div className='NB-Basic-Info__age'>
-            <h2>How old are you?</h2>
+            <h2 style={{ textAlign: 'left' }}>How old are you?</h2>
             <div className='NB-Basic-Info__age__slider'>
                 <Slider
                     max={max}
@@ -38,6 +38,10 @@ const Age = (props) => {
                     onChange={onChange}
                     onChangeComplete={onChangeComplete}
                 />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div>{min} years</div>
+                <div>{max} years</div>
             </div>
 
         </div>

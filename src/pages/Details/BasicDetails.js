@@ -20,6 +20,9 @@ import ERC20_ABI from "../../ethereum/abi/USDC.json";
 import { storeOnIrys } from '../../encryption/storeOnIrys.js';
 import axios from 'axios';
 import { connectLit, disconnectLit } from '../../encryption/litnode.js';
+import DocumentsUpload from '../../components/DocumentsUpload/DocumentsUpload.js';
+import BasicInfoV2 from '../../components/BasicInfo/BasicInfov2.js';
+import GetQuote from '../../components/GetQuote/GetQuote.js';
 
 
 // Example USDC token address on Arbitrum or Sepolia
@@ -46,6 +49,25 @@ const BasicDetails = () => {
   const [walletAddress, setAddress] = useState(null);
   const [activeTab, setActiveTab] = useState("1")
   const [details, setDetails] = useState({
+    selectedQuote: null,
+    healthInfo: {
+      narcotics: "no",
+      diabetes: "no",
+      armed: "no",
+      residency: "no",
+      covid19: {
+        isPositive: "no",
+        isRecovered: "",
+        diagnosisDate: "2020-01-01",
+        recoveryDate: "2020-01-01",
+        isHospitalized: ""
+      },
+      surgery: {
+        hadSurgery: "no",
+        surgeryTypes: [],
+
+      }
+    },
     basicInfo: {
       gender: 'male',
       age: 18,
@@ -67,6 +89,12 @@ const BasicDetails = () => {
       years: 1,
       tags: []
     },
+    documents: {
+      id: "",
+      age: "",
+      address: "",
+      financial: ""
+    },
     nominee: { relationship: "", address: "" },
     payment: {
       payer: 1,
@@ -75,7 +103,7 @@ const BasicDetails = () => {
   })
 
   useEffect(() => {
-   
+
   }, [details])
 
   useEffect(() => {
@@ -108,30 +136,38 @@ const BasicDetails = () => {
     setActiveTab(tab)
   }
 
+  const handleQuoteSelection = id => {
+    setDetails({ ...details, selectedQuote: id })
+  }
+
 
   const renderContent = () => {
 
     switch (+activeTab) {
       case 1:
-        return <BasicInfo />
+        return <BasicInfoV2 />
       case 2:
-        return <InsuranceProduct width="50%" />
+        return <BasicInfo />
+      case 3:
+        return <GetQuote selectedQuote={details.selectedQuote}
+          handleQuoteSelection={handleQuoteSelection} />
       // case 3:
       //   return 'health'
       // case 4:
       //   return 'agent'
-      // case 5:
-      //   return 'docs'
-      case 3:
-        return <Nominee />
       case 4:
-        return <Summary />
+        return <DocumentsUpload />
       case 5:
+        return <Nominee />
+      case 6:
+        return <Summary />
+      case 7:
         return <Payment />
     }
   }
 
   const isBasicInfoFilled = () => {
+    console.log(" bsic info ", details.basicInfo, basicInfoFields)
     return basicInfoFields.every(field => {
       return details.basicInfo[field]
     })
@@ -151,11 +187,11 @@ const BasicDetails = () => {
 
   const checkBalance = async (tokenContract, required) => {
     try {
-      
+
       const addr = ethers.utils.getAddress(walletAddress)
       const balanceBig = await tokenContract.balanceOf(addr)
       const balance = ethers.utils.formatUnits(balanceBig, 6)
-      
+
       if (balance < required) {
         throw Error("Not enough balance tokens")
       }
@@ -198,7 +234,7 @@ const BasicDetails = () => {
       await checkBalance(tokenContract, approveAmount)
 
       const enoughAllowance = await checkAllowance(tokenContract, approveAmount)
-      
+
 
       if (enoughAllowance) {
         alert("Already approved");
@@ -207,7 +243,7 @@ const BasicDetails = () => {
         return
       }
       const tx = await tokenContract.approve(TREASURY, ethers.utils.parseUnits(`${approveAmount}`, 6));
-      
+
       await tx.wait();
       alert("Approval successful!");
       setIsApproving(false)
@@ -233,25 +269,25 @@ const BasicDetails = () => {
         const dataToEncrypt = JSON.stringify(details)
         await connectLit()
         const [ciphertext, dataToEncryptHash] = await encryptData(signer, walletAddress, dataToEncrypt, 'My PI data')
-       
+
 
         if (ciphertext && details.nominee) {
-      
+
           const encryptedDID = await storeOnIrys(provider, ciphertext, dataToEncryptHash, walletAddress, details.nominee.address)
-          
+
           if (encryptedDID) {
             const response = await axios.post('http://localhost:3001/policies', {
               encryptedDID
-    
-              })
-              
-              if (response && response.data && response.data.success) {
-                setBuyingPolicy(false)
-                navigate("/success")
-              }
+
+            })
+
+            if (response && response.data && response.data.success) {
+              setBuyingPolicy(false)
+              navigate("/success")
+            }
           }
-         
-     
+
+
           // TODO: call api
           // API to store data on irys
           // store data on mongodb  { address: owneraddress, resource: receipt.id, nominee: nomineeAddress }
@@ -259,7 +295,7 @@ const BasicDetails = () => {
           // call api to fetch all docs in collection, fetch from irys, return resp
           // client can decrypt only the ones he is allowed to
         }
-      } catch(err) {
+      } catch (err) {
         setBuyingPolicy(false)
         console.log(err)
       } finally {
@@ -300,7 +336,7 @@ const BasicDetails = () => {
     nominee, sumInsured,
     premium,
     event) => {
-   
+
 
     // show success page
     // show details
@@ -316,7 +352,7 @@ const BasicDetails = () => {
 
   const logNebulaApplicationRejected = (processId,
     policyHolder, premium) => {
-    
+
   }
 
 
@@ -357,7 +393,50 @@ const BasicDetails = () => {
     await tx.wait();
   }
 
+  const isDocumentsUploaded = () => {
+    return ["id", "age", "address", "financial"].every(field => details.documents[field])
+  }
+
+  const isCovid19Filled = () => {
+    if (details.healthInfo.covid19.isPositive == "yes") {
+      return ["isHospitalized",
+        "recoveryDate", "diagnosisDate", "isHospitalized"].every(field => details.healthInfo.covid19[field])
+    }
+    return true
+  }
+
+  const isSurgeryFilled = () => {
+    if (details.healthInfo.surgery.hadSurgery == "yes") {
+      if (details.healthInfo.surgery.surgeryTypes.length == 0) return false
+      else return true
+    }
+    return true
+  }
+
+  const isHealthInfoFilled = () => {
+    if (isCovid19Filled() && isSurgeryFilled()) {
+      return true
+    }
+
+    return false
+  }
+
+  const isQuoteSelected = () => {
+    return details.selectedQuote
+  }
+
   const isNextDisabled = () => {
+
+    if (activeTab == "3") {
+      if (!isQuoteSelected()) {
+        return true
+      }
+    }
+    if (activeTab == "2") {
+      if (!isHealthInfoFilled()) {
+        return true
+      }
+    }
     if (activeTab == "5") {
       return true
     }
@@ -369,13 +448,21 @@ const BasicDetails = () => {
 
     }
 
-    if (activeTab == "3") {
+    if (activeTab == "4") {
+
+      if (!isDocumentsUploaded()) {
+        return true
+      }
+
+    }
+
+    if (activeTab == "5") {
       if (!isNomineeFilled()) {
         return true
       }
     }
 
-    if (activeTab == "5") {
+    if (activeTab == "7") {
       if (!isPaymentFilled()) {
         return true
       }
@@ -412,11 +499,11 @@ const BasicDetails = () => {
                 Let’s get to know you better to offer you the best insurance
               </div>
               <div className='subtitle'>
-                Make sure to fill the details appropriately in order to have a smooth claim process
+                <b>Disclaimer: </b>Make sure to fill the details appropriately in order to have a smooth claim process
               </div>
             </div>
           )}
-          {activeTab == "3" && (
+          {activeTab == "5" && (
             <div className='NB-Basic-details__text NB-Basic-details__text--left'>
               Add Nominee
             </div>
@@ -444,7 +531,7 @@ const BasicDetails = () => {
               handleClick={handleNext}
               disabled={isNextDisabled()}
               shape='round' classes='NB-Basic-details__actions__next btn-gradient' type="primary" size="large">
-              Next
+              {activeTab != 1 ? 'Next' : 'Health Info'}
             </NBButton>}
             {/* {activeTab == 5 && !approved && <Button
               onClick={handleApprove}

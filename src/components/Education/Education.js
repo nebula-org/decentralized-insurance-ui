@@ -3,6 +3,7 @@ import { Select } from 'antd';
 
 import "./Education.css";
 import { educationQualification } from '../../utils/education.js';
+import Fieldset from '../Fieldset/Fieldset.js';
 
 const Education = (props) => {
 
@@ -16,17 +17,19 @@ const Education = (props) => {
 
     return (
         <div className='NB-Basic-Info__education'>
-            <h2>Education Qualification</h2>
+            <h2 style={{ textAlign: 'left' }}>Education Qualification</h2>
             <div className='NB-Basic-Info__education__select'>
-                <Select
-                    size='large'
-                    value={education}
-                    optionFilterProp={optionFilterProp}
-                    showSearch
-                    placeholder={placeholder}
-                    onChange={onChange}
-                    options={educationQualification}
-                />
+                <Fieldset legend={"Education Qualification"}>
+                    <Select
+                        size='large'
+                        value={education}
+                        optionFilterProp={optionFilterProp}
+                        showSearch
+                        placeholder={placeholder}
+                        onChange={onChange}
+                        options={educationQualification}
+                    />
+                </Fieldset>
             </div>
         </div>
     )

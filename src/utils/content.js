@@ -3,8 +3,8 @@ import {
     CreditCardOutlined,
     UserAddOutlined,
     FileUnknownOutlined,
-    FileTextOutlined
-    // UserOutlined, HeartOutlined, FileTextOutlined
+    FileTextOutlined,
+    UserOutlined, HeartOutlined
 } from '@ant-design/icons';
 export const basiDetailsTabItems = [
     {
@@ -16,52 +16,53 @@ export const basiDetailsTabItems = [
     },
     {
         key: '2',
-        label: 'Choose Product',
+        label: 'Health Info',
+
+        icon: <HeartOutlined />
+    },
+    {
+        key: '3',
+        label: 'Get Quote',
 
         icon: <UnorderedListOutlined />
     },
-    // {
-    //     key: '3',
-    //     label: 'Health Info',
 
-    //     icon: <HeartOutlined />
-    // },
     // {
     //     key: '4',
     //     label: 'Choose Agent',
 
     //     icon: <UserOutlined />
     // },
-    // {
-    //     key: '5',
-    //     label: 'Document Upload',
-
-    //     icon: <FileTextOutlined />
-    // },
-    {
-        key: '3',
-        label: 'Add Nominee',
-
-        icon: <UserAddOutlined />
-    },
     {
         key: '4',
-        label: 'Summary',
+        label: 'Document Upload',
 
         icon: <FileTextOutlined />
     },
     {
         key: '5',
+        label: 'Add Nominee',
+
+        icon: <UserAddOutlined />
+    },
+    {
+        key: '6',
+        label: 'Summary',
+
+        icon: <FileTextOutlined />
+    },
+    {
+        key: '7',
         label: 'Payment',
 
         icon: <CreditCardOutlined />
     },
 ];
 
-export const basicInfoStepItems = [
+export const fileUploadSteps = [
     {
         key: '1',
-        title: 'Gender',
+        title: 'Identification Proof',
 
 
 
@@ -69,35 +70,102 @@ export const basicInfoStepItems = [
     },
     {
         key: '2',
-        title: 'Age',
+        title: 'Age Proof',
 
 
 
     },
     {
         key: '3',
-        title: 'Country & Pincode',
+        title: 'Address Proof',
 
 
     },
     {
         key: '4',
-        title: 'Occupation',
+        title: 'FInancial Proof',
+
+
+    }
+];
+
+export const QUOTES = [
+    {
+        id: 1,
+        title: "Term Life Insurance",
+        sumAssured: "$800K",
+        term: "5 years",
+        premium: "$85",
+        frequency: "month"
+    },
+    {
+        id: 2,
+        title: "Term Life Insurance",
+        sumAssured: "$500K",
+        term: "5 years",
+        premium: "$50",
+        frequency: "month"
+    },
+    {
+        id: 3,
+        title: "Term Life Insurance",
+        sumAssured: "$200K",
+        term: "5 years",
+        premium: "$20",
+        frequency: "month"
+    },
+    {
+        id: 4,
+        title: "Term Life Insurance",
+        sumAssured: "$100K",
+        term: "5 years",
+        premium: "$10",
+        frequency: "month"
+    }
+]
+
+
+export const basicInfoStepItems = [
+    {
+        key: '1',
+        title: 'Covid19',
+
+
+
+
+    },
+    {
+        key: '2',
+        title: 'Surgery',
+
+
+
+    },
+    {
+        key: '3',
+        title: 'Narcotics',
+
+
+    },
+    {
+        key: '4',
+        title: 'Diabetes',
 
 
     },
     {
         key: '5',
-        title: 'Monthly Income',
+        title: 'Occupation',
 
 
     },
     {
         key: '6',
-        title: 'Education Qualification',
+        title: 'Travel',
 
 
     },
+
 ];
 
 export const claimTrackerStages = [

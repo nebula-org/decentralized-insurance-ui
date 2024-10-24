@@ -1,0 +1,42 @@
+.NB-Surgery .dates {
+    display: flex;
+    justify-content: space-between;
+}
+
+.NB-Surgery .dates .date__diagnosis,
+.NB-Surgery .dates .date__recovery {
+    width: 50%;
+}
+
+.NB-Surgery .dates .date__diagnosis {
+    margin-right: 1rem;
+}
+
+.NB-Surgery .dates .ant-picker {
+    width: 100%;
+    height: 3rem;
+}
+
+.NB-Surgery .ant-card-head-title {
+    text-align: left;
+    font-size: 1.5rem;
+}
+
+.NB-Surgery .ant-card-head {
+    border-bottom: 2px solid #2D2C32;
+    background: linear-gradient(181.14deg, #212028 0.93%, #0F0F0F 56.18%);
+
+
+}
+
+.NB-Surgery .ant-select {
+    width: 100%;
+}
+
+.NB-Surgery .ant-select-item.ant-select-item-option {
+    background-color: #2D2C32 !important;
+}
+
+.NB-Surgery .ant-select-item.ant-select-item-option.ant-select-item-option-selected {
+    background-color: #2D2C32 !important;
+}

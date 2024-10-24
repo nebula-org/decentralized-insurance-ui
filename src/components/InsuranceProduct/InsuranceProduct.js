@@ -25,7 +25,7 @@ const Icon = (props) => {
 const InsuranceProduct = (props) => {
     const { details } = useContext(BasicDetailsContext)
     const { product } = details
-    const { width, iconWidth } = props
+    const { width, iconWidth, noFooter } = props
     return (
 
         <div className='NB-Insurance-Product gradient-bg-outer' style={{ width: width, borderRadius: '1rem' }}>
@@ -58,7 +58,7 @@ const InsuranceProduct = (props) => {
                     </div>
 
                 </div>
-                <div className='NB-Insurance-Product__footer'>
+                {!noFooter && <div className='NB-Insurance-Product__footer'>
                     <div className='NB-Insurance-Product__sum'>
                         <div className='tag-title'>
                             Sum Assured
@@ -79,7 +79,7 @@ const InsuranceProduct = (props) => {
                     <div className='NB-Insurance-Product__premium'>
                         <span>${product.premium * product.frequency} / year</span>
                     </div>
-                </div>
+                </div>}
             </Card>
         </div>
 

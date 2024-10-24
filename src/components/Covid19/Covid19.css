@@ -1,0 +1,18 @@
+.NB-Covid19 .dates {
+    display: flex;
+    justify-content: space-between;
+}
+
+.NB-Covid19 .dates .date__diagnosis,
+.NB-Covid19 .dates .date__recovery {
+    width: 50%;
+}
+
+.NB-Covid19 .dates .date__diagnosis {
+    margin-right: 1rem;
+}
+
+.NB-Covid19 .dates .ant-picker {
+    width: 100%;
+    height: 3rem;
+}

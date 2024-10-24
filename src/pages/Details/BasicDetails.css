@@ -30,7 +30,7 @@
 .NB-Basic-details__actions {
     position: relative;
     height: 1rem;
-    /* margin-bottom: 1rem; */
+    padding-bottom: 2.5rem;
 }
 
 .NB-Basic-details__actions .ant-btn {

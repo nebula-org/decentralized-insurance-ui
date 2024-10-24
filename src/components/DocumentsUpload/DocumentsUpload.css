@@ -1,0 +1,88 @@
+.NB-DocumentsUpload {}
+
+.NB-DocumentsUpload h2 {
+    text-align: left;
+}
+
+.NB-DocumentsUpload__doc {
+    display: flex;
+}
+
+.NB-DocumentsUpload .ant-select {
+    width: 50% !important;
+    height: 3.5rem !important;
+}
+
+.NB-DocumentsUpload .ant-select-selection-item {
+    text-align: left;
+}
+
+.NB-DocumentsUpload__upload-btn {
+    margin-left: 1rem;
+    width: 100%;
+    background: linear-gradient(181.14deg, #212028 0.93%, #0F0F0F 56.18%);
+    border-radius: 1rem;
+    position: relative;
+
+}
+
+.NB-DocumentsUpload__upload-btn .upload-container {
+    height: 3.5rem;
+    width: 100%;
+    padding: 1rem;
+    text-align: left;
+}
+
+.NB-DocumentsUpload__upload-btn .upload-container .ant-btn {
+    margin-top: -0.5rem;
+}
+
+.NB-DocumentsUpload__upload-btn .upload-container .upload-hint {
+    margin-top: 1rem;
+    text-align: left;
+
+}
+
+.NB-DocumentsUpload .ant-steps {
+    padding: 2rem;
+}
+
+.NB-DocumentsUpload .ant-card-head-title {
+    text-align: left;
+    font-size: 1.5rem;
+}
+
+.NB-DocumentsUpload .ant-card-head {
+    border-bottom: 2px solid #2D2C32;
+    background: linear-gradient(181.14deg, #212028 0.93%, #0F0F0F 56.18%);
+
+
+}
+
+.NB-DocumentsUpload .file-title {
+    font-size: 1rem;
+    text-align: left;
+    font-weight: bold;
+    letter-spacing: 0.0125rem;
+}
+
+.NB-DocumentsUpload .file-item {
+    display: flex;
+    background-color: rgb(51, 46, 46);
+    border-radius: 0.5rem;
+    ;
+    padding: 1rem;
+}
+
+.NB-DocumentsUpload .file-item .icon,
+.NB-DocumentsUpload .file-item .trash {
+    /* width: 75%; */
+}
+
+.NB-DocumentsUpload .file-item .content {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 75%;
+    margin-left: 1rem;
+}

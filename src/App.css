@@ -86,3 +86,8 @@
 .ant-modal-footer .ant-btn {
     box-shadow: none;
 }
+
+
+.ant-select-item.ant-select-item-option.ant-select-item-option-selected {
+    background-color: #2D2C32 !important;
+}

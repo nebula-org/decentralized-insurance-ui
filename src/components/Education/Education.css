@@ -1,4 +1,15 @@
 .NB-Basic-Info__education__select .ant-select {
-    width: 30%;
-    height: 3.5rem;
+    width: 100%;
+    /* height: 3.5rem; */
+}
+
+.NB-Basic-Info__education__select .ant-select .ant-select-selector {
+    outline: none !important;
+    border-color: transparent !important;
+
+    box-shadow: none !important;
+}
+
+.NB-Basic-Info__education__select .ant-select .ant-select-selection-item {
+    text-align: left !important;
 }
