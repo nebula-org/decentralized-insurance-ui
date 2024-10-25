@@ -520,14 +520,15 @@ const BasicDetails = () => {
             <NBButton
               handleClick={handlePrev}
               disabled={activeTab == "1"}
-              type="default" shape='round' classes='NB-Basic-details__actions__prev' size="large">Previous</NBButton>
+              type="default" shape='round'
+              classes='NB-Basic-details__actions__prev' size="large">Previous</NBButton>
             {/* {activeTab != 5 && <Button
               onClick={handleNext}
               disabled={isNextDisabled()}
               shape='round' className='NB-Basic-details__actions__next' type="primary" size="large">
               Next
             </Button>} */}
-            {activeTab != 5 && <NBButton
+            {activeTab != 7 && <NBButton
               handleClick={handleNext}
               disabled={isNextDisabled()}
               shape='round' classes='NB-Basic-details__actions__next btn-gradient' type="primary" size="large">
@@ -540,14 +541,14 @@ const BasicDetails = () => {
               shape='round' className='NB-Basic-details__actions__next' type="primary" size="large">
               Approve
             </Button>} */}
-            {activeTab == 5 && !approved && <NBButton
+            {activeTab == 7 && !approved && <NBButton
               handleClick={handleApprove}
               disabled={isApproving || !isApproveEnabled()}
               loading={isApproving}
               shape='round' classes='NB-Basic-details__actions__next btn-gradient' type="primary" size="large">
               Approve
             </NBButton>}
-            {activeTab == 5 && approved && <NBButton
+            {activeTab == 7 && approved && <NBButton
               shape='round'
               classes='NB-Basic-details__actions__next btn-gradient'
               type="primary"

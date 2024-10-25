@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Button, Card, Col, Input, Row, Select, Steps, Progress, message } from 'antd';
 import { ethers } from 'ethers';
@@ -13,6 +13,8 @@ import { storeOnIrys } from '../../encryption/storeOnIrys';
 import { decryptData, decryptFile } from '../../encryption/decrypt';
 import { FileMerger } from '../../utils/merge-files';
 import { getStatusClassNames } from 'antd/es/_util/statusUtils';
+import { encryptToJson } from '@lit-protocol/lit-node-client';
+import { BasicDetailsContext } from '../../pages/Details/BasicDetails';
 
 
 const DOC_OPTIONS = [
@@ -35,6 +37,7 @@ const DocumentsUpload = (props) => {
     const [uploading, setUploading] = useState(false)
     const inputRef = useRef(null)
     const [files, setFiles] = useState([])
+    const { details, setDetails } = useContext(BasicDetailsContext)
 
     const uploadFile = async (event) => {
         inputRef.current.value = ""
@@ -78,7 +81,7 @@ const DocumentsUpload = (props) => {
     const mergeFiles = async () => {
         // Test 
         console.log("files ", files.length, files)
-        if (files.length == 4) {
+        if (files.length >= 4) {
             const merger = new FileMerger()
             for (const file of files) {
 
@@ -86,18 +89,104 @@ const DocumentsUpload = (props) => {
                 console.log("done - ", file)
             }
             const mergedPdf = await merger.save()
-            console.log("mergef ", mergedPdf)
+            console.log("mergedf ", mergedPdf)
+            const file = {
+                type: "Merged",
+                name: "merged.pdf",
+                size: mergedPdf.size,
+                fileToUpload: new File([mergedPdf], "merged.pdf", { type: mergedPdf.type })
+            }
+            setFiles([...files, file])
+            await encryptAndUpload([...files, file])
+
+            // for (const file of files) {
+            //     await encryptAndUpload(file)
+            // }
+            // try {
+            //     await encryptAndUpload(mergedPdf)
+            // }
 
             // encrypt all 4 files + merged file
             // upload all 5 files to irys
             // store returned cid in contract
 
 
-            const url = URL.createObjectURL(mergedPdf);
+            // const url = URL.createObjectURL(mergedPdf);
 
-            console.log("File url : ", url)
-            window.open(url, '_blank').focus();
+            // console.log("File url : ", url)
+            // window.open(url, '_blank').focus();
         }
+    }
+
+    const encryptAndUpload = async (docs) => {
+        setUploading(true)
+        try {
+            // 1. get provider
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            await provider.send('eth_requestAccounts', [])
+            const signer = await provider.getSigner();
+            if (!provider || !signer) return;
+
+
+            //  connect to Lit
+            await connectLit()
+            console.log("docs ", docs)
+            for (const file of docs) {
+                const dataToEncrypt = file.fileToUpload
+                console.log("file toadd ", file)
+                const walletAddress = await signer.getAddress()
+                console.log("address", walletAddress)
+                const [ciphertext, dataToEncryptHash] = await encryptFile(signer,
+                    walletAddress, dataToEncrypt, file.type)
+                console.log("data hash", dataToEncryptHash)
+                //  upload to  irys
+                const tags = [
+                    { name: "docType", value: file.type },
+                    { name: "address", value: walletAddress },
+                    { name: "originalName", value: `${file.name}` },
+                    { name: "size", value: `${file.size}` }
+                ]
+                try {
+                    const encryptedDID = await storeOnIrys(provider,
+                        ciphertext, dataToEncryptHash, walletAddress, tags)
+                    if (!encryptedDID) {
+                        throw new Error("Failed to upload")
+                    }
+                    console.log("Encrupted Did ", encryptedDID, tags)
+                    // update details
+                    let key;
+                    if (file.type == "Identification Proof") {
+                        key = "id"
+                    } else if (file.type == "Age Proof") {
+                        key = "age"
+                    } else if (file.type == "Address Proof") {
+                        key = "address"
+                    } else if (file.type == "Financial Proof") {
+                        key = "financial"
+                    }
+                    setDetails({ ...details, documents: { ...details.document, [key]: encryptedDID } })
+                    //store it in inquiry contract
+                    // function addPolicyDocs(uint8 key, string memory content) 
+
+                } catch (error) {
+                    console.log("error ", error)
+                    setUploading(false)
+                    setStatus("")
+                    setProgress(0)
+                    setSelectedFile(null)
+                    await disconnectLit()
+                }
+            }
+            setUploading(false)
+
+        } catch (err) {
+            console.log("err ", err)
+            setUploading(false)
+            await disconnectLit()
+        }
+
+
+
     }
 
 
@@ -333,7 +422,7 @@ const DocumentsUpload = (props) => {
                                 <div >
 
                                     <Row align={"stretch"}>
-                                        {/* {uploading && <Progress percent={progress} status="active" />} */}
+                                        {uploading && <Progress status="active" />}
                                         {files.map((file) => {
                                             return (
                                                 <Col span={6} style={{ margin: '1rem' }}>
