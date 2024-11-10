@@ -22,12 +22,12 @@
 } */
 
 .NB-Basic-Info__location__country .ant-select .ant-select-selector {
-    outline: none;
-    border-color: transparent;
+    outline: none !important;
+    border-color: transparent !important;
 
-    box-shadow: none;
+    box-shadow: none !important;
 }
 
 .NB-Basic-Info__location__country .ant-select .ant-select-selection-item {
-    text-align: left;
+    text-align: left !important;
 }

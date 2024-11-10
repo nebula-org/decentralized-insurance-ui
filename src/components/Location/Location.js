@@ -62,7 +62,9 @@ const Location = (props) => {
             <h2 style={{ textAlign: 'left' }}>Country of Residence</h2>
             <div className='NB-Basic-Info__location__country'>
 
-                <div style={{ marginRight: '1rem', width: '50%' }}>
+                <div
+                    className='NB-Basic-Info__location__country'
+                    style={{ marginRight: '1rem', width: '50%' }}>
                     <Fieldset legend={"Select Country"}>
                         <Select
                             dropdownStyle={{ textAlign: 'left' }}

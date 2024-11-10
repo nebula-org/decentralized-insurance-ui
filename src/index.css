@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "Satoshi";
   src: local('Satoshi'), url(./fonts/Satoshi-Black.otf) format('otf');
@@ -13,4 +17,9 @@ body {
   overflow-y: auto;
   background-color: #07060E;
   font-family: 'Satoshi';
+}
+
+h2 {
+  padding-bottom: 1rem;
+  font-size: 1.5rem;
 }

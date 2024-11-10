@@ -37,6 +37,9 @@
     border-radius: 50%;
     border: 1px solid #B28BFF;
     cursor: pointer;
+    position: relative;
+    left: 1rem;
+    bottom: 0.5rem;
 }
 
 .NB-Get-Quote .quote-selector .circle-checked {
@@ -46,6 +49,9 @@
     border: 1px solid #B28BFF;
     background-color: #B28BFF;
     cursor: pointer;
+    position: relative;
+    left: 1rem;
+    bottom: 0.5rem;
 }
 
 .NB-Get-Quote__premium {

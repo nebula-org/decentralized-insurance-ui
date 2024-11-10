@@ -8,6 +8,8 @@ import ClaimTracker from '../ClaimTracker/ClaimTracker.js';
 import NBButton from '../NBButton/NBButton.js';
 import "./InsuranceItem.css";
 import { decryptData } from "../../encryption/decrypt.js";
+import InquiryAbi from "../../abi/Inquiry.json"
+import { useSignerStatus, useSmartAccountClient } from "@account-kit/react";
 
 const Icon = (props) => {
     const { className } = props
@@ -21,54 +23,89 @@ const Icon = (props) => {
 const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
     const [info, setInfo] = useState()
     const [notAuthorized, setNotAuthroized] = useState(false)
+    const [productDetails, setProductDetails] = useState({})
+    const signerStatus = useSignerStatus()
+
+    const { client, address, isLoadingClient } = useSmartAccountClient({
+        type: "LightAccount",
+        accountParams: {}, // optional params to further configure the account
+    });
+
+    console.log("Client address ", address)
 
     useEffect(() => {
-      
-        let ignore = false
-        const fetchFromIrys = async () => {
-            const url = `${process.env.REACT_APP_IRYS_GATEWAY}${data.resourceAddress}`;
-            const result = await fetch(url)
-            
-            if (result && result.body) {
-                const data = await result.json()
-                
-                //decrypt
-                if (data) {
-                    try {
-                        const provider = new ethers.providers.Web3Provider(window.ethereum)
-                        await provider.send('eth_requestAccounts', [])
-                        const signer = await provider.getSigner();
-                        if (!provider || !signer) return;
-                        const walletAddress =  await signer.getAddress()
-                        const decryptedInfo = await decryptData(data, signer, walletAddress, 'Decrypt message' )
-                    if (decryptedInfo) {
-                        const info = JSON.parse(decryptedInfo)
-                       
-                    }
-                    } catch(e) {
-                        console.log(e)
-                    }
-                }
-            }
-            
-        }
+        const fetchProduct = async () => {
+            const product = await client.readContract({
+                address: process.env.REACT_APP_INQUIRY,
+                abi: InquiryAbi.abi,
+                functionName: "products",
+                args: [data.productId.toString()]
+            });
+            console.log("Product is ", product)
+
+            setProductDetails({
+                ...productDetails,
+                title: product[1],
+                description: product[2]
+            })
 
 
-        if (!ignore) {
-            try {
-                fetchFromIrys()
-            }catch(e) {
-                console.log(e)
-            }
         }
-
-        return () => {
-            ignore = true
+        console.log("data i s", data, signerStatus, data.productId)
+        // const pid = data.productId.toString()
+        if (signerStatus && signerStatus.isConnected && data) {
+            console.log("fetch")
+            fetchProduct()
         }
-      
-     
-  
     }, [data])
+
+    // useEffect(() => {
+
+    //     let ignore = false
+    //     const fetchFromIrys = async () => {
+    //         const url = `${process.env.REACT_APP_IRYS_GATEWAY}${data.resourceAddress}`;
+    //         const result = await fetch(url)
+
+    //         if (result && result.body) {
+    //             const data = await result.json()
+
+    //             //decrypt
+    //             if (data) {
+    //                 try {
+    //                     const provider = new ethers.providers.Web3Provider(window.ethereum)
+    //                     await provider.send('eth_requestAccounts', [])
+    //                     const signer = await provider.getSigner();
+    //                     if (!provider || !signer) return;
+    //                     const walletAddress =  await signer.getAddress()
+    //                     const decryptedInfo = await decryptData(data, signer, walletAddress, 'Decrypt message' )
+    //                 if (decryptedInfo) {
+    //                     const info = JSON.parse(decryptedInfo)
+
+    //                 }
+    //                 } catch(e) {
+    //                     console.log(e)
+    //                 }
+    //             }
+    //         }
+
+    //     }
+
+
+    //     if (!ignore) {
+    //         try {
+    //             fetchFromIrys()
+    //         }catch(e) {
+    //             console.log(e)
+    //         }
+    //     }
+
+    //     return () => {
+    //         ignore = true
+    //     }
+
+
+
+    // }, [data])
 
     const navigate = useNavigate()
 
@@ -77,9 +114,21 @@ const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
     }
 
     const handleViewClaimDetails = () => {
+        if (data && data.docs && data.docs.idProof) {
+            // const url = `https://devnet.irys.xyz/${data.docs.mergedProof}`
+
+            // window.open(url, '_blank').focus();
+            navigate({
+                pathname: '/files',
+                search: `?cid=${data.docs.mergedProof}`,
+            });
+        }
         if (withClaimTracker) {
             // TODO: get claim id
-            navigate('/claims/details/?id=23390390394444440002')
+            // navigate('/claims/details/?id=23390390394444440002')
+
+
+
         }
     }
     return (
@@ -93,9 +142,10 @@ const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
                                 <div className='icon'>
                                     <Icon className="hand" />
                                 </div>
-                                <div className='title'>
-                                    Term life Insurance
+                                <div className='title' title={productDetails.description}>
+                                    {productDetails.title}
                                 </div>
+
                             </div>
                             <div style={{
                                 cursor: withClaimTracker ? 'pointer' : ''
@@ -106,7 +156,7 @@ const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
                         <div className='content-2'>
                             <div className='row-1'>
                                 <div className='sum'>
-                                    <ContentTile title="Sum Assured" value="10$" />
+                                    <ContentTile title="Sum Assured" value={`${data.sumAssured}$`} />
                                 </div>
                                 <div className='claim-status'>
                                     <ContentTile title="Claim Status" value="N/A" />
@@ -115,10 +165,10 @@ const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
 
                             <div className='row-2'>
                                 <div className='nick'>
-                                    <ContentTile title="Nick Name" value="Brother" />
+                                    <ContentTile title="Nick Name" value={`${data.relationship}`} />
                                 </div>
                                 <div className='holder'>
-                                    <ContentTile title="Policy Holder" value="0x566....fee" />
+                                    <ContentTile title="Policy Holder" value={`${data.nominee}`} />
                                 </div>
                             </div>
                         </div>
@@ -127,10 +177,10 @@ const InsuranceItem = ({ withClaimTracker, noBorder, data }) => {
                         <div className='content-3'>
                             <div className='row-1'>
                                 <div className='start'>
-                                    <ContentTile title="Policy Start" value="23 May 2024" />
+                                    <ContentTile title="Policy Start" value="30 Oct 2024" />
                                 </div>
                                 <div className='end'>
-                                    <ContentTile title="Policy Expiry" value="23 May 2025" />
+                                    <ContentTile title="Policy Expiry" value="30 Oct 2025" />
                                 </div>
                             </div>
                             <div className='row-2'>

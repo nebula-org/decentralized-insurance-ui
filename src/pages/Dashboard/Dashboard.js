@@ -3,7 +3,7 @@ import {
     UserOutlined,
     VideoCameraOutlined
 } from '@ant-design/icons';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu, Spin, theme } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InsuranceItem from '../../components/InsuranceItem/InsuranceItem.js';
 
@@ -13,6 +13,9 @@ import axios from 'axios';
 import EncryptedInsuranceItem from '../../components/InsuranceItem/EncryptedInsuranceItem.js';
 import ClaimDetails from '../ClaimDetails/ClaimDetails.js';
 import "./Dashboard.css";
+import { useSignerStatus, useSmartAccountClient } from '@account-kit/react';
+
+import InquiryAbi from "../../abi/Inquiry.json"
 
 
 
@@ -26,39 +29,47 @@ const Dashboard = () => {
 
     const location = useLocation();
     const navigate = useNavigate()
-    
+    const signerStatus = useSignerStatus()
+
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
+    const { client, address, isLoadingClient } = useSmartAccountClient({
+        type: "LightAccount",
+        accountParams: {}, // optional params to further configure the account
+    });
+
+    console.log("My address ", address)
 
     useEffect(() => {
         let ignore = false
 
         const fetchPolicies = async () => {
-            try {
-                const res = await axios.get('http://localhost:3001/policies')
-                
-                if (res && res.data && res.data.users) {
-                setInsurances(res.data.users)
-                }
-            } catch(e) {
-                console.log(e)
-            }
+            const policy = await client.readContract({
+                address: process.env.REACT_APP_INQUIRY,
+                abi: InquiryAbi.abi,
+                functionName: "getPolicyByOwner",
+                args: [address]
+            });
+            console.log("Policy is ", policy)
+            setInsurances([policy])
         }
 
-        if (!ignore) {
+        if (!ignore && client) {
             fetchPolicies()
         }
 
         return () => {
             ignore = true
         }
-    }, [])
+    }, [client])
 
-   
+
 
     useEffect(() => {
-       
+
         if (location) {
             if (location.pathname == '/policies') {
                 setSelectedMenu('2')
@@ -131,12 +142,12 @@ const Dashboard = () => {
                     {
                         !insurances.length ? <div><h3>No policies are available</h3></div> : (
                             <>
-                            {insurances.map(insurance => {
-                            return (
-                                <EncryptedInsuranceItem key={insurance.id} data={insurance} />
-                            )
-                            })}
-                            
+                                {insurances.map((insurance, idx) => {
+                                    return (
+                                        <InsuranceItem key={idx} data={insurance} />
+                                    )
+                                })}
+
                             </>
                         )
                     }
@@ -230,7 +241,9 @@ const Dashboard = () => {
                         borderRadius: borderRadiusLG,
                     }}
                 >
-                    {renderContent()}
+                    {signerStatus.isConnected ? renderContent() : <Spin
+                        style={{ marginLeft: 'auto', marginRIght: 'auto' }} size='large' />}
+
                 </Content>
             </Layout>
         </Layout>

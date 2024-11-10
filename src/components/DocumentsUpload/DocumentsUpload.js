@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { Button, Card, Col, Input, Row, Select, Steps, Progress, message } from 'antd';
+import { Button, Card, Col, Input, Row, Select, Steps, Progress, message, Spin } from 'antd';
 import { ethers } from 'ethers';
 import { FilePdfOutlined, DeleteOutlined } from '@ant-design/icons'
 
@@ -15,6 +15,8 @@ import { FileMerger } from '../../utils/merge-files';
 import { getStatusClassNames } from 'antd/es/_util/statusUtils';
 import { encryptToJson } from '@lit-protocol/lit-node-client';
 import { BasicDetailsContext } from '../../pages/Details/BasicDetails';
+import { useAccount, useSigner, useSmartAccountClient, useUser } from '@account-kit/react';
+
 
 
 const DOC_OPTIONS = [
@@ -38,6 +40,19 @@ const DocumentsUpload = (props) => {
     const inputRef = useRef(null)
     const [files, setFiles] = useState([])
     const { details, setDetails } = useContext(BasicDetailsContext)
+
+    const { client, address, isLoadingClient } = useSmartAccountClient({
+        type: "LightAccount",
+        accountParams: {}, // optional params to further configure the account
+    });
+
+    const signer = useSigner()
+    const user = useUser()
+
+
+    // const { account, isLoadingAccount } = useAccount({
+    //     type: "LightAccount",
+    // });
 
     const uploadFile = async (event) => {
         inputRef.current.value = ""
@@ -81,6 +96,7 @@ const DocumentsUpload = (props) => {
     const mergeFiles = async () => {
         // Test 
         console.log("files ", files.length, files)
+        await encryptAndUpload([...files])
         if (files.length >= 4) {
             const merger = new FileMerger()
             for (const file of files) {
@@ -91,7 +107,7 @@ const DocumentsUpload = (props) => {
             const mergedPdf = await merger.save()
             console.log("mergedf ", mergedPdf)
             const file = {
-                type: "Merged",
+                type: "merged",
                 name: "merged.pdf",
                 size: mergedPdf.size,
                 fileToUpload: new File([mergedPdf], "merged.pdf", { type: mergedPdf.type })
@@ -122,10 +138,18 @@ const DocumentsUpload = (props) => {
         setUploading(true)
         try {
             // 1. get provider
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            await provider.send('eth_requestAccounts', [])
-            const signer = await provider.getSigner();
-            if (!provider || !signer) return;
+            // const provider = new ethers.providers.Web3Provider(client)
+            // await provider.send('eth_requestAccounts', [])
+            // const signer = await provider.getSigner();
+            // if (!provider || !signer) return;
+            // const provider = client
+            // if (!provider) return
+
+            console.log("Prov v2 2", client)
+            console.log("prov ", signer)
+
+
+
 
 
             //  connect to Lit
@@ -134,9 +158,13 @@ const DocumentsUpload = (props) => {
             for (const file of docs) {
                 const dataToEncrypt = file.fileToUpload
                 console.log("file toadd ", file)
-                const walletAddress = await signer.getAddress()
+                // const walletAddress = await signer.getAddress()
+                const walletAddress = user ? user.address : address
+
                 console.log("address", walletAddress)
-                const [ciphertext, dataToEncryptHash] = await encryptFile(signer,
+                // const [ciphertext, dataToEncryptHash] = await encryptFile(signer,
+                //     walletAddress, dataToEncrypt, file.type)
+                const [ciphertext, dataToEncryptHash] = await encryptFile(client,
                     walletAddress, dataToEncrypt, file.type)
                 console.log("data hash", dataToEncryptHash)
                 //  upload to  irys
@@ -147,14 +175,16 @@ const DocumentsUpload = (props) => {
                     { name: "size", value: `${file.size}` }
                 ]
                 try {
-                    const encryptedDID = await storeOnIrys(provider,
+
+                    const encryptedDID = await storeOnIrys(client,
                         ciphertext, dataToEncryptHash, walletAddress, tags)
                     if (!encryptedDID) {
                         throw new Error("Failed to upload")
                     }
+                    console.log("file ", file)
                     console.log("Encrupted Did ", encryptedDID, tags)
                     // update details
-                    let key;
+                    let key = "id";
                     if (file.type == "Identification Proof") {
                         key = "id"
                     } else if (file.type == "Age Proof") {
@@ -163,8 +193,20 @@ const DocumentsUpload = (props) => {
                         key = "address"
                     } else if (file.type == "Financial Proof") {
                         key = "financial"
+                    } else if (file.type == "merged") {
+                        key = "merged"
                     }
-                    setDetails({ ...details, documents: { ...details.document, [key]: encryptedDID } })
+                    console.log("key ", key, file)
+                    setDetails(prevDetails => {
+                        return {
+                            ...prevDetails,
+                            documents: {
+                                ...prevDetails.documents,
+                                [key]: encryptedDID
+                            }
+                        }
+                    })
+
                     //store it in inquiry contract
                     // function addPolicyDocs(uint8 key, string memory content) 
 
@@ -422,8 +464,8 @@ const DocumentsUpload = (props) => {
                                 <div >
 
                                     <Row align={"stretch"}>
-                                        {uploading && <Progress status="active" />}
-                                        {files.map((file) => {
+                                        <Col span={24}> {uploading && <Spin size="large" style={{ marginLeft: 'auto', marginRight: 'auto' }} />}</Col>
+                                        {files.filter(file => file.type != "merged").map((file) => {
                                             return (
                                                 <Col span={6} style={{ margin: '1rem' }}>
                                                     <p className='file-title'>{file.type}</p>

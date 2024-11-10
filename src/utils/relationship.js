@@ -9,10 +9,15 @@ export const relationshipList = [
     },
     {
         key: "3",
-        value: "Wife"
+        value: "Spouse"
     },
+
     {
         key: "4",
-        value: "Husband"
+        value: "Bank"
+    },
+    {
+        key: "5",
+        value: "Employer"
     }
 ]

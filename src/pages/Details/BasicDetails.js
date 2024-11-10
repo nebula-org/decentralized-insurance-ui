@@ -23,6 +23,10 @@ import { connectLit, disconnectLit } from '../../encryption/litnode.js';
 import DocumentsUpload from '../../components/DocumentsUpload/DocumentsUpload.js';
 import BasicInfoV2 from '../../components/BasicInfo/BasicInfov2.js';
 import GetQuote from '../../components/GetQuote/GetQuote.js';
+import { useSendUserOperation, useSmartAccountClient, useUser } from '@account-kit/react';
+import bigInt from 'big-integer';
+import InquiryAbi from "../../abi/Inquiry.json"
+import { encodeFunctionData } from 'viem';
 
 
 // Example USDC token address on Arbitrum or Sepolia
@@ -87,13 +91,15 @@ const BasicDetails = () => {
       frequency: 10,
       period: 'monthly',
       years: 1,
-      tags: []
+      tags: [],
+      quotes: []
     },
     documents: {
       id: "",
       age: "",
       address: "",
-      financial: ""
+      financial: "",
+      merged: ""
     },
     nominee: { relationship: "", address: "" },
     payment: {
@@ -101,6 +107,14 @@ const BasicDetails = () => {
       approved: false
     }
   })
+
+  const { client, address, isLoadingClient } = useSmartAccountClient({
+    type: "LightAccount",
+    accountParams: {}, // optional params to further configure the account
+  });
+  const user = useUser()
+  const { sendUserOperationAsync } = useSendUserOperation({ client })
+
 
   useEffect(() => {
 
@@ -216,6 +230,69 @@ const BasicDetails = () => {
     }
   }
 
+  const handleApproveWithAbstraction = async () => {
+    if (isApproving) return
+    setIsApproving(true)
+    try {
+      console.log("details -->", details)
+      const dataToEncrypt = JSON.stringify(details)
+      console.log("details -->", details)
+      await connectLit()
+      const walletAddress = user ? user.address : address
+      const [ciphertext, dataToEncryptHash] = await encryptData(client, walletAddress, dataToEncrypt, 'My PI data')
+      const encryptedDID = await storeOnIrys(client, ciphertext, dataToEncryptHash, walletAddress)
+      console.log("basicencrypted ", encryptedDID)
+      console.log("docs ", details.documents)
+      const docs = {
+        idProof: details.documents.id,
+        ageProof: details.documents.age,
+        addressProof: details.documents.address,
+        financialProof: details.documents.financial,
+        mergedProof: details.documents.merged
+      }
+      const result = await sendUserOperationAsync({
+        uo: {
+          target: process.env.REACT_APP_INQUIRY,
+          data: encodeFunctionData({
+            abi: InquiryAbi.abi,
+            functionName: "createPolicyInquiry",
+            args: [
+              encryptedDID,
+              docs,
+              { productId: bigInt("0"), quoteId: bigInt("0") },
+
+              details.nominee.address,
+              details.nominee.relationship
+            ]
+          })
+        }
+      })
+      console.log("Result ", result)
+      setApproved(true)
+
+      const resultOfApproval = await sendUserOperationAsync({
+        uo: {
+          target: process.env.REACT_APP_INQUIRY,
+          data: encodeFunctionData({
+            abi: InquiryAbi.abi,
+            functionName: "approveTokenTransfer",
+            args: [
+              bigInt("0"),
+              bigInt("0")
+            ]
+          })
+        }
+      })
+      console.log("Is approved ", resultOfApproval)
+      setIsApproving(false)
+
+    } catch (e) {
+      setIsApproving(false)
+      console.log("failed operation", e)
+    }
+
+  }
+
   const handleApprove = async () => {
     if (isApproving) return
     if (test) {
@@ -254,6 +331,36 @@ const BasicDetails = () => {
       setIsApproving(false)
     }
   };
+
+  const handleTransferWithAbstraction = async () => {
+    if (buyingPolicy) return
+    setBuyingPolicy(true)
+    setTimeout(() => {
+      setBuyingPolicy(false)
+
+      navigate("/success")
+    }, 3000)
+    // try {
+
+    //   const result = await sendUserOperationAsync({
+    //     uo: {
+    //       target: process.env.REACT_APP_INQUIRY,
+    //       data: encodeFunctionData({
+    //         abi: InquiryAbi.abi,
+    //         functionName: "buyPolicy"
+    //       })
+    //     }
+    //   })
+    //   console.log("Result ", result)
+    //   navigate("/success")
+    // } catch (e) {
+    //   setBuyingPolicy(false)
+    //   console.log("Purchase failed", e)
+    // } finally {
+    //   setBuyingPolicy(false)
+
+    // }
+  }
 
 
   const handleTransfer = async () => {
@@ -394,7 +501,10 @@ const BasicDetails = () => {
   }
 
   const isDocumentsUploaded = () => {
-    return ["id", "age", "address", "financial"].every(field => details.documents[field])
+    console.log("det: =>", details)
+    return ["id",
+      "age", "address", "financial"
+    ].every(field => details.documents[field])
   }
 
   const isCovid19Filled = () => {
@@ -437,9 +547,9 @@ const BasicDetails = () => {
         return true
       }
     }
-    if (activeTab == "5") {
-      return true
-    }
+    // if (activeTab == "5") {
+    //   return true
+    // }
     if (activeTab == "1") {
 
       if (!isBasicInfoFilled()) {
@@ -542,7 +652,7 @@ const BasicDetails = () => {
               Approve
             </Button>} */}
             {activeTab == 7 && !approved && <NBButton
-              handleClick={handleApprove}
+              handleClick={handleApproveWithAbstraction}
               disabled={isApproving || !isApproveEnabled()}
               loading={isApproving}
               shape='round' classes='NB-Basic-details__actions__next btn-gradient' type="primary" size="large">
@@ -553,7 +663,7 @@ const BasicDetails = () => {
               classes='NB-Basic-details__actions__next btn-gradient'
               type="primary"
               size="large"
-              handleClick={handleTransfer}
+              handleClick={handleTransferWithAbstraction}
               disabled={buyingPolicy}
               loading={buyingPolicy}
             >

@@ -12,6 +12,7 @@ import BasicDetails from '../../pages/Details/BasicDetails.js';
 import Home from '../../pages/Home/Home.js';
 import Success from '../../pages/Success/Success.js';
 import NBHeader from './NBHeader.js';
+import FileViewer from '../FileViewer/FileViewer.js';
 
 export const router = createBrowserRouter([
     {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
     {
         path: '/claim-processing',
         element: <ClaimProcessingFee />
+    },
+    {
+        path: '/files',
+        element: <FileViewer />
     }
 ]);
 

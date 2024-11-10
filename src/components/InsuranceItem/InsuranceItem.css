@@ -1,6 +1,7 @@
 .NB-Insurance-Item {
     margin-top: 1rem;
 }
+
 .NB-Insurance-Item .card-style {
     /* background-color: #1b1b20; */
     border-radius: 1rem;
@@ -43,6 +44,7 @@
 .NB-Insurance-Item .content-1 .header .icon .hand {
     stroke: white;
     margin-top: 0.5rem;
+    margin-left: 0.5rem;
 }
 
 .NB-Insurance-Item .content-1 .header .title {
@@ -61,6 +63,7 @@
     overflow-wrap: break-word;
     font-weight: 500;
     margin-left: 0.5rem;
+    margin-top: 1rem;
 }
 
 .NB-Insurance-Item .content-2 .row-1 {
