@@ -466,16 +466,6 @@ const BasicDetails = () => {
   const getProductContract = async () => {
 
 
-    // new_contract.on("LogNebulaPolicyCreated", logPolicyCreated)
-    // new_contract.on("LogNebulaPremiumPaymentFailed", logNebulaPremiumPaymentFailed)
-    // new_contract.on("LogNebulaClaimConfirmed", logNebulaClaimConfirmed)
-    // new_contract.on("LogNebulaApplicationRejected", logNebulaApplicationRejected)
-    // new_contract.on("LogNebulaPayoutExecuted", logNebulaPayoutExecuted);
-    // new_contract.on("LogNebulaNomineeFound", LogNebulaNomineeFound)
-    // new_contract.on("LogPayoutZero", LogPayoutZero)
-    // new_contract.on("LogClaimCreated", LogClaimCreated)
-    // new_contract.on("LogClaimConfirmed", LogClaimConfirmed)
-
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = await provider.getSigner();
     if (!provider || !signer) return;
