@@ -45,6 +45,7 @@ const createSiweMessage = (address, statement, nonce) => {
 
 
 export const getAuthSig = async (wallet, address, statement = 'My PI data') => {
+    //TODO: removed cache to test differentuser scenarios
     // const chachedValue = localStorage.getItem('authSig')
 
 
