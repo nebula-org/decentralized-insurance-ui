@@ -3,6 +3,39 @@
 This repo contains the basic UI components used for the decentralized insurance project
 
 
+## Checkout code
+
+## Install yarn
+
+## Install dependencies
+yarn install
+
+## Create .env file
+touch .env
+
+## Add lines to .env file
+> REACT_APP_LIT_NETWORK=datil-dev
+> REACT_APP_CHAINID=1
+> REACT_APP_CHAIN=ethereum
+> REACT_APP_IRYS_PROVIDER_URL=https://rpc-mumbai.maticvigil.com
+> REACT_APP_IRYS_URL=https://devnet.irys.xyz
+> REACT_APP_IRYS_TOKEN=matic
+> REACT_APP_IRYS_GATEWAY=https://gateway.irys.xyz/
+> REACT_APP_ALCHEMY_ACCOUNT_KIT_KEY=?
+> REACT_APP_ALCHEMY_ACCOUNT_GAS_POLICYID=?
+> GENERATE_SOURCEMAP=false
+> REACT_APP_NEBULA_KEY=?
+> REACT_APP_ALCHEMY_RPC_URL=https://arb-sepolia.g.alch
+> REACT_APP_NEBULA_SERVER=http://localhost:3002
+> REACT_APP_INQUIRY=?
+
+## Start app
+yarn start
+
+
+
+
+# Below not required
 
 ## Available Scripts
 
